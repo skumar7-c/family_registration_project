@@ -51,7 +51,7 @@ router.post('/families/:id/:status', async (req, res) => {
       console.log(`📧 Email sent to ${family.email}`);
     }
 
-    res.send(✅ User status updated to '${status}' and email sent.);
+    res.send(`✅ User status updated to '${status}' and email sent.`);
   } catch (err) {
     console.error("❌ Error updating status or sending email:", err.message);
     res.status(500).json({ error: 'Failed to update status or send email' });
