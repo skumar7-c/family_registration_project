@@ -23,7 +23,8 @@ app.use(session({
 
 // Static & view engine
 app.use(express.static('public'));
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads',
+        express.static(path.join(__dirname,'uploads')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -32,7 +33,7 @@ app.use('/admin', adminRoutes);
 
 // Multer setup
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, 'uploads/'),
+  destination: (req, file, cb) => cb(null, path.join(__dirname,'uploads/')),
   filename: (req, file, cb) => {
     const unique = Date.now() + path.extname(file.originalname);
     cb(null, file.fieldname + '-' + unique);
