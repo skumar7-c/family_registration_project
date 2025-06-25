@@ -48,7 +48,7 @@ router.post('/families/:id/:status', async (req, res) => {
           :` Hi ${family.familyHead},\n\nWe regret to inform you that your registration has been rejected.\n\nThank you for your interest.`;
 
       await sendEmail(family.email, subject, message);
-      console.log(📧 Email sent to `${family.email}`);
+      console.log(`📧 Email sent to ${family.email}`);
     }
 
     res.send(✅ User status updated to '${status}' and email sent.);
