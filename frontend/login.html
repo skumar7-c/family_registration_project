@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login Form</title>
+  <title>Login</title>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Segoe UI', sans-serif ,;
+      font-family: 'Segoe UI', sans-serif;
     }
 
     body {
@@ -30,8 +30,14 @@
 
     .login-box h2 {
       text-align: center;
-      margin-bottom: 30px;
+      margin-bottom: 20px;
       color: #333;
+    }
+
+    .error-message {
+      text-align: center;
+      color: red;
+      margin-bottom: 15px;
     }
 
     .input-group {
@@ -53,11 +59,6 @@
       font-size: 16px;
     }
 
-    .input-group input:focus {
-      border-color: #4e54c8;
-      outline: none;
-    }
-
     .btn {
       width: 100%;
       background: #4e54c8;
@@ -67,7 +68,6 @@
       color: white;
       font-size: 16px;
       cursor: pointer;
-      transition: background 0.3s ease;
     }
 
     .btn:hover {
@@ -93,17 +93,35 @@
 <body>
   <div class="login-box">
     <h2>Login</h2>
-    <form>
+
+    <!-- Show error message from query string if present -->
+    <div id="errorMessage" class="error-message" style="display: none;"></div>
+
+    <form action="/login" method="POST">
       <div class="input-group">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" placeholder="Enter username" required />
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required />
       </div>
       <div class="input-group">
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" placeholder="Enter password" required />
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob" required />
       </div>
       <button type="submit" class="btn">Login</button>
     </form>
+
+    <div class="bottom-text">
+      <p>Don't have an account? <a href="/register">Register</a></p>
+    </div>
   </div>
+
+  <script>
+    // Display error from URL (e.g., ?error=Invalid%20DOB)
+    const params = new URLSearchParams(window.location.search);
+    const error = params.get('error');
+    if (error) {
+      document.getElementById("errorMessage").innerText = decodeURIComponent(error);
+      document.getElementById("errorMessage").style.display = "block";
+    }
+  </script>
 </body>
 </html>
