@@ -2,13 +2,12 @@ const express = require('express');
 const router = express.Router();
 const Family = require('../models/family');
 
-// POST /login - validate email + dob
 router.post('/', async (req, res) => {
   const { email, dob } = req.body;
 
   try {
     if (!email || !dob) {
-      return res.render('login', { error: 'Please enter both email and date of birth.' });
+      return res.redirect('/login.html?error=Please%20enter%20email%20and%20DOB');
     }
 
     const dobDate = new Date(dob);
@@ -20,13 +19,14 @@ router.post('/', async (req, res) => {
     });
 
     if (!user) {
-      return res.render('login', { error: 'Login failed. Please check your credentials.' });
+      return res.redirect('/login.html?error=Login%20failed%2C%20invalid%20credentials');
     }
 
-    res.redirect('/dashboard'); // Or wherever you want to go after login
+    // If login is successful, redirect to dashboard
+    res.redirect('/dashboard.html');
   } catch (err) {
-    console.error('Login Error:', err);
-    res.render('login', { error: 'Something went wrong. Try again.' });
+    console.error('Login error:', err);
+    res.redirect('/login.html?error=Server%20error');
   }
 });
 
