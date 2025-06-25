@@ -44,11 +44,11 @@ router.post('/families/:id/:status', async (req, res) => {
 
       const message =
         status === 'approved'
-          ? Hi ${family.familyHead},\n\nYour registration has been approved! 🎉\nYour username is your email address and password is your date of birth.\n\nLogin here:\n${loginLink}
-          : Hi ${family.familyHead},\n\nWe regret to inform you that your registration has been rejected.\n\nThank you for your interest.;
+          ? `Hi ${family.familyHead},\nYour registration has been approved! 🎉\nYour username is your email address and password is your date of birth.\n\nLogin here:\n${loginLink}`
+          :` Hi ${family.familyHead},\n\nWe regret to inform you that your registration has been rejected.\n\nThank you for your interest.`;
 
       await sendEmail(family.email, subject, message);
-      console.log(📧 Email sent to ${family.email});
+      console.log(📧 Email sent to `${family.email}`);
     }
 
     res.send(✅ User status updated to '${status}' and email sent.);
