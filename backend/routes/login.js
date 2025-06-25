@@ -7,16 +7,11 @@ router.post('/', async (req, res) => {
   const { email, dob } = req.body;
 
   try {
-    console.log("🔍 Email from form:", email);
-    console.log("🔍 DOB from form:", dob);
-
     if (!email || !dob) {
-      console.log("❌ Missing email or DOB");
       return res.render('login', { error: 'Please enter both email and date of birth.' });
     }
 
     const dobDate = new Date(dob);
-    console.log("🗓️ Parsed DOB as Date:", dobDate);
 
     const user = await Family.findOne({
       email: email.trim(),
@@ -24,15 +19,13 @@ router.post('/', async (req, res) => {
       status: 'approved'
     });
 
-    console.log("🔎 DB result:", user);
-
     if (!user) {
-      return res.render('login', { error: 'Login failed. Please try again.' });
+      return res.render('login', { error: 'Login failed. Please check your credentials.' });
     }
 
-    res.redirect('/dashboard');
+    res.redirect('/dashboard'); // Or wherever you want to go after login
   } catch (err) {
-    console.error('❌ Login Error:', err);
+    console.error('Login Error:', err);
     res.render('login', { error: 'Something went wrong. Try again.' });
   }
 });
