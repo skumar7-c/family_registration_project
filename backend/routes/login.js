@@ -1,3 +1,4 @@
+// routes/login.js
 const express = require('express');
 const router = express.Router();
 const Family = require('../models/family');
@@ -7,11 +8,14 @@ router.post('/', async (req, res) => {
   const { email, dob } = req.body;
 
   try {
-    // Convert 'dd-mm-yyyy' to a Date
-    const [day, month, year] = dob.split('-');
-    const dobDate = new Date(${year}-${month}-${day});
+    if (!email || !dob) {
+      return res.render('login', { error: 'Please enter both email and date of birth.' });
+    }
 
-    // Find approved user
+    // Convert input DOB string to Date (input is in YYYY-MM-DD format)
+    const dobDate = new Date(dob);
+
+    // Match user from DB with status approved
     const user = await Family.findOne({
       email: email.trim(),
       dob: { $eq: dobDate },
@@ -22,12 +26,12 @@ router.post('/', async (req, res) => {
       return res.render('login', { error: 'Login failed. Please try again.' });
     }
 
-    // Successful login
-    return res.redirect('/dashboard'); // or wherever you want to redirect
+    // ✅ Successful login
+    res.redirect('/dashboard'); // or wherever your protected page is
   } catch (err) {
     console.error('Login Error:', err);
     res.render('login', { error: 'Something went wrong. Try again.' });
   }
 });
 
-module.exports = router;
+module.exports = router;
