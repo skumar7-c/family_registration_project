@@ -7,7 +7,7 @@ router.post('/', async (req, res) => {
 
   try {
     if (!email || !dob) {
-      return res.redirect('/login.html?error=Please%20enter%20email%20and%20DOB');
+      return res.render('login', { error: 'Please enter email and DOB' });
     }
 
     const dobDate = new Date(dob);
@@ -19,14 +19,14 @@ router.post('/', async (req, res) => {
     });
 
     if (!user) {
-      return res.redirect('/login.html?error=Login%20failed%2C%20invalid%20credentials');
+      return res.render('login', { error: 'Incorrect email or DOB' });
     }
 
-    // If login is successful, redirect to dashboard
-    res.redirect('/dashboard.html');
+    // ✅ Login successful – you can also store session here if needed
+    res.redirect('/dashboard.html'); // Change to res.render('dashboard') if you're using EJS
   } catch (err) {
     console.error('Login error:', err);
-    res.redirect('/login.html?error=Server%20error');
+    res.render('login', { error: 'Server error. Please try again.' });
   }
 });
 
