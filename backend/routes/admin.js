@@ -39,7 +39,7 @@ router.post('/families/:id/:status', async (req, res) => {
 
     // Send email if email exists
     if (family.email) {
-      const subject = Registration ${status === 'approved' ? 'Approved ✅' : 'Rejected ❌'};
+      const subject = `Registration ${status === 'approved' ? 'Approved ✅' : 'Rejected ❌'}`;
       const loginLink = process.env.LOGIN_LINK || 'http://localhost:5000/login';
 
       const message =
