@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const Family = require('../models/family');
-const sendEmail = require('../utils/sendEmail'); // Make sure this file exists
+const sendEmail = require('../utils/sendEmail'); // utils/sendEmail.js must exist
 
-// ✅ 1. Render the Admin Panel (admin.ejs)
+// ✅ 1. Admin Panel (Renders admin.ejs)
 router.get('/', (req, res) => {
-  res.render('admin'); // admin.ejs must be inside /views folder
+  res.render('admin'); // Ensure 'admin.ejs' exists in 'views' folder
 });
 
-// ✅ 2. API: Get list of families (for fetch() in admin.ejs)
+// ✅ 2. Get All Families (For Display in Admin Panel)
 router.get('/families', async (req, res) => {
   try {
     const families = await Family.find().sort({ createdAt: -1 });
@@ -19,12 +19,11 @@ router.get('/families', async (req, res) => {
   }
 });
 
-// ✅ 3. API: Update status (approve/reject) with email
+// ✅ 3. Approve/Reject + Send Email Notification
 router.post('/families/:id/:status', async (req, res) => {
   const { id, status } = req.params;
 
   try {
-    // Validate status
     if (!['approved', 'rejected'].includes(status)) {
       return res.status(400).json({ error: 'Invalid status value' });
     }
@@ -40,22 +39,23 @@ router.post('/families/:id/:status', async (req, res) => {
 
     // Send email if email exists
     if (family.email) {
-      const subject = `Registration ${status === 'approved' ? 'Approved ✅' : 'Rejected ❌'}`;
-      const loginLink = 'http://localhost:5000/login'; // update if needed
+      const subject = Registration ${status === 'approved' ? 'Approved ✅' : 'Rejected ❌'};
+      const loginLink = process.env.LOGIN_LINK || 'http://localhost:5000/login';
 
       const message =
         status === 'approved'
-          ? `Hi ${family.familyHead},\n\nYour registration has been approved! 🎉\n Your username is email address and password is date of birth. \n\nYou can now login here:\n${loginLink}`
-          : `Hi ${family.familyHead},\n\nWe regret to inform you that your registration has been rejected.\n\nThank you for your interest.`;
+          ? Hi ${family.familyHead},\n\nYour registration has been approved! 🎉\nYour username is your email address and password is your date of birth.\n\nLogin here:\n${loginLink}
+          : Hi ${family.familyHead},\n\nWe regret to inform you that your registration has been rejected.\n\nThank you for your interest.;
 
       await sendEmail(family.email, subject, message);
+      console.log(📧 Email sent to ${family.email});
     }
 
-    res.send(`✅ User status updated to '${status}' and email sent.`);
+    res.send(✅ User status updated to '${status}' and email sent.);
   } catch (err) {
-    console.error("❌ Error updating status or sending email:", err);
+    console.error("❌ Error updating status or sending email:", err.message);
     res.status(500).json({ error: 'Failed to update status or send email' });
   }
 });
 
-module.exports = router;
+module.exports = router;
