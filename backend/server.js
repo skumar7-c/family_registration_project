@@ -51,7 +51,7 @@ mongoose.connect(process.env.MONGO_URI, {
 // Home route
 app.get('/', (req, res) => {
   if (req.session.user) return res.redirect('/dashboard');
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
 // Registration route
