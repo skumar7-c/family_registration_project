@@ -30,6 +30,8 @@ router.post('/', async (req, res) => {
     }
 
     // ✅ Login successful – store user in session if needed
+    req.session.user={ id:user._id,email:user.email,familyHead:user.familyHead
+                     };
     res.redirect('/dashboard.html'); // Or use res.render('dashboard', { user }) for EJS
 
   } catch (err) {
