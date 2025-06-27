@@ -400,10 +400,10 @@ function addFamilyMember() {
     <label for="member-marital-status">Marital Status:</label>
     <select name="maritalStatus[]" id="member-marital-status${memberCount}" required>
       <option value="">Select</option>
-      <option value>Unmarried</option>
-      <option value>Married</option>
-      <option value>Widowed</option>
-      <option value>Divorced</option>
+      <option value="">Unmarried</option>
+      <option value="">Married</option>
+      <option value="">Widowed</option>
+      <option value="">Divorced</option>
     </select>
       <span id="error-member-marital-status" class="error-message"></span>
 
@@ -529,7 +529,7 @@ function submitForm(event) {
 
 
     //member validation part
-    function validateFamilyMembers() {
+    function validateForm() {
   let isValid = true;
 
   for (let i = 1; i <= memberCount; i++) {
