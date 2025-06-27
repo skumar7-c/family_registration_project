@@ -186,7 +186,7 @@ button[type="submit"]:hover {
     <marquee behavior="scroll" direction="left">Welcome to Family Registration Portal</marquee>
   </header>
 
-  <form    action="/submit-form" method="POST" enctype="multipart/form-data"  novalidate>
+  <form    action="/submit-form" method="POST" enctype="multipart/form-data"  onsubmit="return validateForm(event);"  novalidate>
     <div class="form-section">
       <h3 style="color: #b73c0b;">Personal Information</h3>
 
