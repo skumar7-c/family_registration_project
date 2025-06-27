@@ -23,8 +23,7 @@ app.use(session({
 
 // Static & view engine
 app.use(express.static('public'));
-app.use('/uploads',
-        express.static(path.join(__dirname,'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
@@ -33,7 +32,7 @@ app.use('/admin', adminRoutes);
 
 // Multer setup
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname,'uploads/')),
+  destination: (req, file, cb) => cb(null, path.join(__dirname, 'uploads/')),
   filename: (req, file, cb) => {
     const unique = Date.now() + path.extname(file.originalname);
     cb(null, file.fieldname + '-' + unique);
@@ -64,7 +63,21 @@ app.post('/submit-form', upload.single('files'), async (req, res) => {
       address, memberName, relation, age,
       maritalStatus, qualification, occupation: memberOccupation,
     } = req.body;
- console.log("Received",req.body);
+
+    console.log("🟢 Received Form Data:", req.body);
+
+    // ✅ Validate required fields
+    if (!dob || !email || !familyHead) {
+      return res.status(400).send("Missing required fields: dob, email, or familyHead.");
+    }
+
+    // ✅ Parse and validate DOB
+    const dobDate = new Date(dob);
+    if (isNaN(dobDate.getTime())) {
+      return res.status(400).send("Invalid Date format");
+    }
+
+    // ✅ Handle members
     const members = [];
     if (Array.isArray(memberName)) {
       memberName.forEach((_, i) => {
@@ -92,9 +105,9 @@ app.post('/submit-form', upload.single('files'), async (req, res) => {
 
     const newFamily = new Family({
       profileImage: req.file?.path || '',
-      familyHead: familyHead,
+      familyHead,
       gender,
-      dob: new Date(dob), // stored directly
+      dob: dobDate,
       phone,
       email,
       locality,
@@ -105,20 +118,18 @@ app.post('/submit-form', upload.single('files'), async (req, res) => {
       bloodGroup,
       address,
       members,
-      status: 'pending',
-      email // no password needed
+      status: 'pending'
     });
 
     await newFamily.save();
     res.send('✅ Registered! Please wait for admin approval.');
-
   } catch (error) {
     console.error("❌ Registration Error:", error);
     res.status(500).send('Error: ' + error.message);
   }
 });
 
-// Render login page
+// Login page
 app.get('/login', (req, res) => {
   if (req.session.user) return res.redirect('/dashboard');
   res.render('login', { error: null });
@@ -145,14 +156,13 @@ app.post('/login', async (req, res) => {
 
     req.session.user = { id: user._id, email: user.email, name: user.familyHead };
     res.redirect('/dashboard');
-
   } catch (err) {
     console.error('❌ Login Error:', err);
     res.render('login', { error: 'Login failed. Please try again.' });
   }
 });
 
-// Dashboard page
+// Dashboard
 app.get('/dashboard', (req, res) => {
   if (!req.session.user) return res.redirect('/login');
   res.render('dashboard', { user: req.session.user });
@@ -163,6 +173,6 @@ app.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/login'));
 });
 
-// Server
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
