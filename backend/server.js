@@ -59,12 +59,12 @@ app.get('/', (req, res) => {
 app.post('/submit-form', upload.single('files'), async (req, res) => {
   try {
     const {
-      value, gender, dob, phone, email, city, locality,
+      familyHead, gender, dob, phone, email, city, locality,
       occupation, gotra, nativePlace, bloodGroup,
       address, memberName, relation, age,
       maritalStatus, qualification, occupation: memberOccupation,
     } = req.body;
-
+ console.log("Received",req.body);
     const members = [];
     if (Array.isArray(memberName)) {
       memberName.forEach((_, i) => {
@@ -92,9 +92,9 @@ app.post('/submit-form', upload.single('files'), async (req, res) => {
 
     const newFamily = new Family({
       profileImage: req.file?.path || '',
-      familyHead: value,
+      familyHead: familyHead,
       gender,
-      dob: new date(dob), // stored directly
+      dob: new Date(dob), // stored directly
       phone,
       email,
       locality,
