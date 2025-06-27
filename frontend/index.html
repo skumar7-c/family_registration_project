@@ -364,11 +364,12 @@ function addFamilyMember() {
     <button type="button" class="remove-btn" onclick="removeMember('member-${memberId}')">Remove</button>
     <h4>Member #${memberId}</h4>
 
-    <label>Name:</label>
-    <input type="text" name="memberName[]" required>
+    <label>Enter the name of family member:</label>
+    <input type="text" name="memberName[]" id="member-name" placeholder="Enter the name of family member..." required>
+      <span id="error-member-name" class="error-message"></span>
 
-    <label>Relation:</label>
-    <select name="relation[]" required>
+    <label for="member-relation">Relation:</label>
+    <select name="relation[]" id="member-relation" required>
       <option value="">Select Relation</option>
         <option>Father</option>
         <option>Mother</option>
@@ -388,32 +389,36 @@ function addFamilyMember() {
         <option>other</option>
 
     </select>
+      <span id="error-member-relation" class="error-message"></span>
 
 
 
     <label>Age:</label>
-    <input type="number" name="age[]" min="0" required>
+    <input type="number" name="age[]" min="0" id="member-age" required>
+      <span id="error-member-age" class="error-message"></span>
 
-    <label>Marital Status:</label>
-    <select name="maritalStatus[]" required>
+    <label for="member-marital-status">Marital Status:</label>
+    <select name="maritalStatus[]" id="member-marital-status" required>
       <option value="">Select</option>
       <option>Unmarried</option>
       <option>Married</option>
       <option>Widowed</option>
       <option>Divorced</option>
     </select>
+      <span id="error-member-marital-status" class="error-message"></span>
 
-    <label>Blood Group:</label>
-    <select name="bloodGroup[]" required>
+    <label for="member-bloodGroup">Blood Group:</label>
+    <select name="bloodGroup[]"  id="member-bloodGroup" required>
       <option value="">Select</option>
       <option>A+</option><option>A-</option>
       <option>B+</option><option>B-</option>
       <option>O+</option><option>O-</option>
       <option>AB+</option><option>AB-</option>
     </select>
+      <span id="error-member-bloodGroup" class="error-message"></span>
 
-    <label>Qualification:</label>
-    <select name="qualification[]" required>
+    <label for="member-qualification">Qualification:</label>
+    <select name="qualification[]" id="member-qualification" required>
       <option value="">Select</option>
       <option>Illiterate</option>
       <option>Below 10th</option>
@@ -424,6 +429,7 @@ function addFamilyMember() {
       <option>Post Graduation</option>
       <option>Ph.D</option>
     </select>
+    <span id="error-member-quaification" class="error-message"></span>
 
     <label>Occupation:</label>
     <input type="text" name="occupation[]">
@@ -520,6 +526,58 @@ function submitForm(event) {
 
   return false;
 }
+
+
+    //member validation part
+    function validateFamilyMembers() {
+  let isValid = true;
+
+  for (let i = 1; i <= memberCount; i++) {
+    const name = document.getElementById(`memberName${i}`).value.trim();
+    const relation = document.getElementById(`memberRelation${i}`).value.trim();
+    const age = document.getElementById(`memberAge${i}`).value.trim();
+    const gender = document.getElementById(`memberGender${i}`).value;
+    const blood = document.getElementById(`memberBlood${i}`).value;
+
+    if (!name) {
+      document.getElementById(`error-member-name${i}`).innerText = "Enter name";
+      isValid = false;
+    } else {
+      document.getElementById(`error-member-name${i}`).innerText = "";
+    }
+
+    if (!relation) {
+      document.getElementById(`error-member-relation${i}`).innerText = "Enter relation";
+      isValid = false;
+    } else {
+      document.getElementById(`error-member-relation${i}`).innerText = "";
+    }
+
+    if (!age || isNaN(age) || age <= 0) {
+      document.getElementById(`error-member-age${i}`).innerText = "Enter valid age";
+      isValid = false;
+    } else {
+      document.getElementById(`error-member-age${i}`).innerText = "";
+    }
+
+    if (!gender) {
+      document.getElementById(`error-member-gender${i}`).innerText = "Select gender";
+      isValid = false;
+    } else {
+      document.getElementById(`error-member-gender${i}`).innerText = "";
+    }
+
+    if (!blood) {
+      document.getElementById(`error-member-blood${i}`).innerText = "Select blood group";
+      isValid = false;
+    } else {
+      document.getElementById(`error-member-blood${i}`).innerText = "";
+    }
+  }
+
+  return isValid;
+}
+
 
   </script>
 </body>
