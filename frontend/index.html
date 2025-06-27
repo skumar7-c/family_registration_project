@@ -108,21 +108,6 @@
       width: 90%;
       margin: auto;
     }
-
-.remove-btn {
-  background: #e53935;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  float: right;
-  margin-bottom: 10px;
-}
-.remove-btn:hover {
-  background: #c62828;
-}
-
 .add-member-btn {
   background-color: #2196f3;
   color: white;
@@ -362,39 +347,39 @@ button[type="submit"]:hover {
     const blood = document.getElementById(`member-bloodGroup${i}`).value;
 
     if (!name) {
-      showError(error-member-name${i}, "Enter name");
+      showError(`error-member-name${i}`, "Enter name");
     } else {
-      clearError(error-member-name${i});
+      clearError(`error-member-name${i}`);
     }
 
     if (!relation) {
-      showError(error-member-relation${i}, "Enter relation");
+      showError(`error-member-relation${i}`, "Enter relation");
     } else {
-      clearError(error-member-relation${i});
+      clearError(`error-member-relation${i}`);
     }
 
     if (!age || isNaN(age) || age <= 0) {
-      showError(error-member-age${i}, "Enter valid age");
+      showError(`error-member-age${i}`, "Enter valid age");
     } else {
-      clearError(error-member-age${i});
+      clearError(`error-member-age${i}`);
     }
 
     if (!gender) {
-      showError(error-member-gender${i}, "Select gender");
+      showError(`error-member-gender${i}`, "Select gender");
     } else {
-      clearError(error-member-gender${i});
+      clearError(`error-member-gender${i}`);
     }
 
     if (!qualification) {
-      showError(error-member-qualification${i}, "Select qualification");
+      showError(`error-member-qualification${i}`, "Select qualification");
     } else {
-      clearError(error-member-qualification${i});
+      clearError(`error-member-qualification${i}`);
     }
 
     if (!blood) {
-      showError(error-member-bloodGroup${i}, "Select blood group");
+      showError(`error-member-bloodGroup${i}`, "Select blood group");
     } else {
-      clearError(error-member-bloodGroup${i});
+      clearError(`error-member-bloodGroup${i}`);
     }
   }
       return isValid;
@@ -416,7 +401,7 @@ function addFamilyMember() {
 
     <label>Enter the name of family member:</label>
     <input type="text" name="member-name[]" id="member-name${memberCount}" placeholder="Enter the name of family member..." required>
-      <span id="error-member-name" class="error-message"></span>
+      <span id="error-member-name${memberCount}" class="error-message"></span>
 
     <label for="member-relation">Relation:</label>
     <select name="relation[]" id="member-relation${memberCount}" required>
@@ -438,13 +423,13 @@ function addFamilyMember() {
         <option value="Cousion">Cousin</option>
         <option value="Other">other</option>
     </select>
-      <span id="error-member-relation" class="error-message"></span>
+      <span id="error-member-relation${memberCount}" class="error-message"></span>
 
 
 
     <label>Age:</label>
     <input type="number" name="age[]" min="0" id="member-age${memberCount}" required>
-      <span id="error-member-age" class="error-message"></span>
+      <span id="error-member-age${memberCount}" class="error-message"></span>
 
 
       <select id="member-gender${memberCount}">
@@ -462,7 +447,7 @@ function addFamilyMember() {
       <option value="Widowed">Widowed</option>
       <option value="Divorced">Divorced</option>
     </select>
-      <span id="error-member-marital-status" class="error-message"></span>
+      <span id="error-member-marital-status${memberCount}" class="error-message"></span>
 
     <label for="member-bloodGroup">Blood Group:</label>
     <select name="bloodGroup[]"  id="member-bloodGroup${memberCount}" required>
@@ -472,7 +457,7 @@ function addFamilyMember() {
       <option value="O+">O+</option><option value="O-">O-</option>
       <option value="AB+">AB+</option><option value="AB-">AB-</option>
     </select>
-      <span id="error-member-bloodGroup" class="error-message"></span>
+      <span id="error-member-bloodGroup${memberCount}" class="error-message"></span>
 
     <label for="member-qualification">Qualification:</label>
     <select name="qualification[]" id="member-qualification${memberCount}" required>
@@ -486,7 +471,7 @@ function addFamilyMember() {
       <option value="Post Graduation">Post Graduation</option>
       <option value="Ph.D">Ph.D</option>
     </select>
-    <span id="error-member-quaification" class="error-message"></span>
+    <span id="error-member-quaification${memberCount}" class="error-message"></span>
 
     <label>Occupation:</label>
     <input type="text" name="occupation[]">
