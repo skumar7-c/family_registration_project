@@ -366,28 +366,28 @@ function addFamilyMember() {
     <h4>Member #${memberId}</h4>
 
     <label>Enter the name of family member:</label>
-    <input type="text" name="memberName[]" id="member-name${memberCount}" placeholder="Enter the name of family member..." required>
+    <input type="text" name="member-name[]" id="member-name${memberCount}" placeholder="Enter the name of family member..." required>
       <span id="error-member-name" class="error-message"></span>
 
     <label for="member-relation">Relation:</label>
     <select name="relation[]" id="member-relation${memberCount}" required>
       <option value="">Select Relation</option>
-        <option value="">Father</option>
-        <option value="">Mother</option>
-        <option value="">Brother</option>
-        <option value="">Sister</option>
-        <option value="">Wife</option>
-        <option value="">Son</option>
-        <option value="">Uncle</option>
-        <option value="">Siblings</option>
-        <option value="">Grand child</option>
-        <option value="">Grand parent</option>
-        <option value="">Daughter in law</option>
-        <option value="">Aunt</option>
-       <option value="">Nephew</option>
-        <option value="">Niece</option>
-        <option value="">Cousin</option>
-        <option value="">other</option>
+        <option value="Father">Father</option>
+        <option value="Mother">Mother</option>
+        <option value="Brother">Brother</option>
+        <option value="Sister">Sister</option>
+        <option value="Wife">Wife</option>
+        <option value="Son">Son</option>
+        <option value="Uncle">Uncle</option>
+        <option value="Sibling">Sibling</option>
+        <option value="grand child">Grand child</option>
+        <option value="Grand parent">Grand parent</option>
+        <option value="Daughter in law">Daughter in law</option>
+        <option value="aunt">Aunt</option>
+       <option value="Neohew">Nephew</option>
+        <option value="Miece">Niece</option>
+        <option value="Cousion">Cousin</option>
+        <option value="Other">other</option>
     </select>
       <span id="error-member-relation" class="error-message"></span>
 
@@ -397,37 +397,45 @@ function addFamilyMember() {
     <input type="number" name="age[]" min="0" id="member-age${memberCount}" required>
       <span id="error-member-age" class="error-message"></span>
 
+
+      <select id="member-gender${memberCount}">
+        <option value="">Select Gender</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+      </select>
+      <span id="error-member-gender${memberCount}" class="error-message"></span>
+
     <label for="member-marital-status">Marital Status:</label>
     <select name="maritalStatus[]" id="member-marital-status${memberCount}" required>
       <option value="">Select</option>
-      <option value="">Unmarried</option>
-      <option value="">Married</option>
-      <option value="">Widowed</option>
-      <option value="">Divorced</option>
+      <option value="Unmarried">Unmarried</option>
+      <option value="Married">Married</option>
+      <option value="Widowed">Widowed</option>
+      <option value="Divorced">Divorced</option>
     </select>
       <span id="error-member-marital-status" class="error-message"></span>
 
     <label for="member-bloodGroup">Blood Group:</label>
     <select name="bloodGroup[]"  id="member-bloodGroup${memberCount}" required>
       <option value="">Select</option>
-      <option value="">A+</option><option value="">A-</option>
-      <option value="">B+</option><option value="">B-</option>
-      <option value="">O+</option><option value="">O-</option>
-      <option value="">AB+</option><option value="">AB-</option>
+      <option value="A+">A+</option><option value="A-">A-</option>
+      <option value="B+">B+</option><option value="B-">B-</option>
+      <option value="O+">O+</option><option value="O-">O-</option>
+      <option value="AB+">AB+</option><option value="AB-">AB-</option>
     </select>
       <span id="error-member-bloodGroup" class="error-message"></span>
 
     <label for="member-qualification">Qualification:</label>
     <select name="qualification[]" id="member-qualification${memberCount}" required>
       <option value="">Select</option>
-      <option value="">Illiterate</option>
-      <option value="">Below 10th</option>
-      <option value="">Matriculation (10th)</option>
-      <option value="">Higher Secondary (10+2)</option>
-      <option value="">Diploma</option>
-      <option value="">Graduation</option>
-      <option value="">Post Graduation</option>
-      <option value="">Ph.D</option>
+      <option value="Illiterate">Illiterate</option>
+      <option value="Below 10th">Below 10th</option>
+      <option value="Matriculation (10th)">Matriculation (10th)</option>
+      <option value="Higher Secondary(10+2)">Higher Secondary (10+2)</option>
+      <option value="Diploma">Diploma</option>
+      <option value="Graduation">Graduation</option>
+      <option value="Post Graduation">Post Graduation</option>
+      <option value="Ph.D">Ph.D</option>
     </select>
     <span id="error-member-quaification" class="error-message"></span>
 
@@ -537,6 +545,8 @@ function submitForm(event) {
     const relation = document.getElementById(`member-relation${i}`).value.trim();
     const age = document.getElementById(`member-age${i}`).value.trim();
     const gender = document.getElementById(`member-gender${i}`).value;
+  const qualification = document.getElementById(`member-qualification${i}`).value;
+
     const blood = document.getElementById(`member-bloodGroup${i}`).value;
 
     if (!name) {
@@ -566,6 +576,16 @@ function submitForm(event) {
     } else {
       document.getElementById(`error-member-gender${i}`).innerText = "";
     }
+
+
+
+    if (!qualification) {
+      document.getElementById(`error-member-qualification${i}`).innerText = "Enter relation";
+      isValid = false;
+    } else {
+      document.getElementById(`error-member-qualification${i}`).innerText = "";
+    }
+    
 
     if (!blood) {
       document.getElementById(`error-member-blood${i}`).innerText = "Select blood group";
