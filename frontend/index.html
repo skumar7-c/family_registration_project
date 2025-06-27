@@ -315,11 +315,11 @@ button[type="submit"]:hover {
       if (!email.includes("@")) showError("error-email", "Please enter a valid email.");
       else clearError("error-email");
 
-      const city = document.getElementById("city").value;
+      const city = document.getElementById("city");
       if (!city) showError("error-city", "Please select your city.");
       else clearError("error-city");
 
-      const locality = document.getElementById("locality").value;
+      const locality = document.getElementById("locality");
       if (!locality) showError("error-locality", "Please select your locality.");
       else clearError("error-locality");
 
