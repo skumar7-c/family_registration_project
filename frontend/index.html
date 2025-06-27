@@ -220,15 +220,9 @@ button[type="submit"]:hover {
       <span id="error-email" class="error-message"></span>
 
 
-
-
-
-
-    <label for="city">City:
-
-    </label>
+    <label for="city">City:</label>
     <select id="city" name="city" onchange="updateLocalities()">
- <option value="">Select City</option>
+ <    option value="">Select City</option>
       <option value="jaipur">Jaipur</option>
       <option value="Chittorgarh">Chittorgarh</option>
     <span id="error-city" class="error-message"></span>
@@ -236,14 +230,10 @@ button[type="submit"]:hover {
 
     <label for="locality">Locality:</label>
     <select id="locality" name="locality">
+    <option value="">Select Locality</option>
     <span id="error-locality" class="error-message"></span>
 
-    <option value="">Select Locality</option>
-
     </select>
-
-
-
 
       <label>Occupation:</label>
       <input type="text" id="occupation" name="occupation[]" placeholder="Enter your occupation...">
@@ -318,14 +308,14 @@ button[type="submit"]:hover {
       else clearError("error-dob");
 
       const phone = document.getElementById("phone").value.trim();
-      if (!/^[789]\d{9}$/.test(phone)) showError("error-phone", "Enter valid 10-digit phone starting with 7/8/9.");
+      if (!/^[6789]\d{9}$/.test(phone)) showError("error-phone", "Enter valid 10-digit phone starting with 6/7/8/9.");
       else clearError("error-phone");
 
       const email = document.getElementById("email").value.trim();
       if (!email.includes("@")) showError("error-email", "Please enter a valid email.");
       else clearError("error-email");
 
-      const city = document.getElementById("city").value.trim();
+      const city = document.getElementById("city").value;
       if (!city) showError("error-city", "Please select your city.");
       else clearError("error-city");
 
@@ -376,13 +366,13 @@ function addFamilyMember() {
     <select name="relation[]" required>
       <option value="">Select Relation</option>
         <option>Father</option>
-        <option>Uncle</option>
-        <option>Siblings</option>
         <option>Mother</option>
         <option>Brother</option>
-        <option>Wife</option>
         <option>Sister</option>
+        <option>Wife</option>
         <option>Son</option>
+        <option>Uncle</option>
+        <option>Siblings</option>
         <option>Grand child</option>
         <option>Grand parent</option>
         <option>Daughter in law</option>
@@ -390,6 +380,7 @@ function addFamilyMember() {
        <option>Nephew</option>
         <option>Niece</option>
         <option>Cousin</option>
+        <option>other</option>
 
     </select>
 
