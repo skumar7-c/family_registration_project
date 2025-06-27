@@ -354,12 +354,12 @@ button[type="submit"]:hover {
 
 // ✅ Dynamic Family Member Validation
   for (let i = 1; i <= memberCount; i++) {
-    const name = document.getElementById(member-name${i}).value.trim();
-    const relation = document.getElementById(member-relation${i}).value.trim();
-    const age = document.getElementById(member-age${i}).value.trim();
-    const gender = document.getElementById(member-gender${i}).value;
-    const qualification = document.getElementById(member-qualification${i}).value;
-    const blood = document.getElementById(member-bloodGroup${i}).value;
+    const name = document.getElementById(`member-name${i}`).value.trim();
+    const relation = document.getElementById(`member-relation${i}`).value;
+    const age = document.getElementById(`member-age${i}`).value.trim();
+    const gender = document.getElementById(`member-gender${i}`).value;
+    const qualification = document.getElementById(`member-qualification${i}`).value;
+    const blood = document.getElementById(`member-bloodGroup${i}`).value;
 
     if (!name) {
       showError(error-member-name${i}, "Enter name");
