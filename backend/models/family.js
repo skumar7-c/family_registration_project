@@ -14,7 +14,7 @@ const familySchema = new mongoose.Schema({
   profileImage: { type: String }, // path or filename
   familyHead: { type: String, required: true },
   gender: { type: String },
-  dob: { type: Date },
+  dob: { type: Date ,required:true },
   phone: { type: String },
   email: { type: String, required: true },
   locality: [{ type: String }],
