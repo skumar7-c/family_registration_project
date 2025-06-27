@@ -186,12 +186,13 @@ button[type="submit"]:hover {
     <marquee behavior="scroll" direction="left">Welcome to Family Registration Portal</marquee>
   </header>
 
-  <form onsubmit="return validateForm()" novalidate>
+  <form    action="/submit-form" method="POST" enctype="multipart/form-data"  novalidate>
     <div class="form-section">
       <h3 style="color: #b73c0b;">Personal Information</h3>
 
       <div class="profile-pic-container">
-        <input type="file" id="profile" name="files" accept="image/*">
+        <input type="file" id="profile"   name="files"  accept="image/*" onchange="loadProfileImage(this)" required>
+
         <label for="profile" class="profile-label" id="profileImage"></label>
       </div>
       <span id="error-profile" class="error-message"></span>
@@ -448,6 +449,20 @@ function removeMember(id) {
       }
     }
 
+
+    // profile image
+    function loadProfileImage(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const preview = document.getElementById('profileImage');
+        preview.style.backgroundImage = `url('${e.target.result}')`;
+        preview.style.backgroundSize = "cover";
+        preview.style.backgroundPosition = "center";
+        preview.style.border = "none";
+      };
+      reader.readAsDataURL(input.files[0]);
+    }}
 
 
   // backend part
