@@ -246,7 +246,7 @@ button[type="submit"]:hover {
       <input type="text" id="nativePlace" name="nativePlace" placeholder=" Enter your native place...">
       <span id="error-native" class="error-message"></span>
 
-<label>Blood Group:</label>
+<label for="bloodGroup">Blood Group:</label>
     <select id="bloodGroup" name="bloodGroup[]" required>
       <option value="">Select</option>
       <option>A+</option><option>A-</option>
@@ -303,8 +303,8 @@ button[type="submit"]:hover {
       const dob = document.getElementById("dob").value;
       const dobDate = new Date(dob);
       const minDOB = new Date("1970-01-01");
-      const maxDOB = new Date("2025-01-01");
-      if (!dob || dobDate < minDOB || dobDate > maxDOB) showError("error-dob", "DOB must be between 01-01-1970 and 01-01-2025.");
+      const maxDOB = new Date("2025-06-01");
+      if (!dob || dobDate < minDOB || dobDate > maxDOB) showError("error-dob", "DOB must be between 01-01-1970 and 01-06-2025.");
       else clearError("error-dob");
 
       const phone = document.getElementById("phone").value.trim();
