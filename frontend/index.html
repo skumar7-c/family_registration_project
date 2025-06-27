@@ -204,6 +204,23 @@ button[type="submit"]:hover {
       <input type="email" id="email" name="email" placeholder="Enter your email id..." required>
       <span id="error-email" class="error-message"></span>
 
+      <label>Occupation:</label>
+      <input type="text" id="occupation" name="occupation[]" placeholder="Enter your occupation...">
+      <span id="error-occupation" class="error-message"></span>
+
+      <label>Gotra:</label>
+      <input type="text" id="gotra" name="gotra" placeholder="Enter your gotra...">
+      <span id="error-gotra" class="error-message"></span>
+
+       <label for="bloodGroup">Blood Group:</label>
+     <select id="bloodGroup" name="bloodGroup[]" required>
+      <option value="">Select</option>
+      <option value="A+">A+</option><option value="A-">A-</option>
+      <option value="B+">B+</option><option value="B-">B-</option>
+      <option value="O+">O+</option><option value="O-">O-</option>
+      <option value="AB+">AB+</option><option value="AB-">AB-</option>
+    </select>
+    <span id="error-bloodGroup" class="error-message"></span>
 
     <label for="city">City:</label>
     <select id="city" name="city" onchange="updateLocalities()">
@@ -219,39 +236,21 @@ button[type="submit"]:hover {
     </select>
     <span id="error-locality" class="error-message"></span>
 
-      <label>Occupation:</label>
-      <input type="text" id="occupation" name="occupation[]" placeholder="Enter your occupation...">
-      <span id="error-occupation" class="error-message"></span>
-
-      <label>Gotra:</label>
-      <input type="text" id="gotra" name="gotra" placeholder="Enter your gotra...">
-      <span id="error-gotra" class="error-message"></span>
-
       <label>Native Place:</label>
       <input type="text" id="nativePlace" name="nativePlace" placeholder=" Enter your native place...">
       <span id="error-native" class="error-message"></span>
-
-     <label for="bloodGroup">Blood Group:</label>
-     <select id="bloodGroup" name="bloodGroup[]" required>
-      <option value="">Select</option>
-      <option value="A+">A+</option><option value="A-">A-</option>
-      <option value="B+">B+</option><option value="B-">B-</option>
-      <option value="O+">O+</option><option value="O-">O-</option>
-      <option value="AB+">AB+</option><option value="AB-">AB-</option>
-    </select>
-    <span id="error-bloodGroup" class="error-message"></span>
-
-
+  
       <label>Full Address:</label>
       <textarea id="address" name="address"  placeholder="Enter your full address..."></textarea>
       <span id="error-address" class="error-message"></span>
     </div>
 
+
+    
 <div id="member-wrapper" class="form-section">
   <h3 style="color: #2910b7;">Family Member Details:</h3>
 </div>
 <button type="button" class="add-member-btn" onclick="addFamilyMember()">+ Add Member</button>
-
 
 
     <div class="checkbox-section">
@@ -264,6 +263,8 @@ button[type="submit"]:hover {
     <button type="submit">Submit</button>
   </form>
 
+
+  
   <script>
     function validateForm() {
       let isValid = true;
@@ -334,50 +335,48 @@ button[type="submit"]:hover {
       else clearError("error-confirm");
 
 
-
-
-
 // ✅ Dynamic Family Member Validation
   for (let i = 1; i <= memberCount; i++) {
     const name = document.getElementById(`member-name${i}`).value.trim();
     const relation = document.getElementById(`member-relation${i}`).value;
     const age = document.getElementById(`member-age${i}`).value.trim();
-    const gender = document.getElementById(`member-gender${i}`).value;
     const qualification = document.getElementById(`member-qualification${i}`).value;
     const blood = document.getElementById(`member-bloodGroup${i}`).value;
+    const marital = document.getElementById(`member-marital-status${i}`).value;
 
     if (!name) {
-      showError(`error-member-name${i}`, "Enter name");
+      showError(`error-member-name${i}`, "Please enter your family membername.");
     } else {
       clearError(`error-member-name${i}`);
     }
 
     if (!relation) {
-      showError(`error-member-relation${i}`, "Enter relation");
+      showError(`error-member-relation${i}`, "Please enter your relation with familyhead.");
     } else {
       clearError(`error-member-relation${i}`);
     }
 
     if (!age || isNaN(age) || age <= 0) {
-      showError(`error-member-age${i}`, "Enter valid age");
+      showError(`error-member-age${i}`, "Please enter valid age");
     } else {
       clearError(`error-member-age${i}`);
     }
-
-    if (!gender) {
-      showError(`error-member-gender${i}`, "Select gender");
-    } else {
-      clearError(`error-member-gender${i}`);
-    }
-
+    
     if (!qualification) {
-      showError(`error-member-qualification${i}`, "Select qualification");
+      showError(`error-member-qualification${i}`, " Please select your qualification");
     } else {
       clearError(`error-member-qualification${i}`);
     }
 
+
+  if (!marital) {
+      showError(`error-member-marital-status${i}`, "Please select your marital status");
+    } else {
+      clearError(`error-member-marital-status${i}`);
+    }
+    
     if (!blood) {
-      showError(`error-member-bloodGroup${i}`, "Select blood group");
+      showError(`error-member-bloodGroup${i}`, " Please select blood group");
     } else {
       clearError(`error-member-bloodGroup${i}`);
     }
@@ -432,13 +431,11 @@ function addFamilyMember() {
       <span id="error-member-age${memberCount}" class="error-message"></span>
 
 
-      <select id="member-gender${memberCount}">
-        <option value="">Select Gender</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-      </select>
-      <span id="error-member-gender${memberCount}" class="error-message"></span>
-
+ <label>Gender:</label>
+      <div class="gender-options">
+        <label><input type="radio" name="gender" value="Male" > Male</label>
+        <label><input type="radio" name="gender" value="Female" checked> Female</label>
+      </div>
     <label for="member-marital-status">Marital Status:</label>
     <select name="maritalStatus[]" id="member-marital-status${memberCount}" required>
       <option value="">Select</option>
