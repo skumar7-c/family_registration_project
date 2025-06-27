@@ -94,7 +94,7 @@ app.post('/submit-form', upload.single('files'), async (req, res) => {
       profileImage: req.file?.path || '',
       familyHead: value,
       gender,
-      dob: new Date(dob), // stored directly
+      dob: new date(dob), // stored directly
       phone,
       email,
       locality,
