@@ -247,13 +247,14 @@ button[type="submit"]:hover {
       <span id="error-native" class="error-message"></span>
 
 <label>Blood Group:</label>
-    <select name="bloodGroup[]" required>
+    <select id="bloodGroup" name="bloodGroup[]" required>
       <option value="">Select</option>
       <option>A+</option><option>A-</option>
       <option>B+</option><option>B-</option>
       <option>O+</option><option>O-</option>
       <option>AB+</option><option>AB-</option>
     </select>
+    <span id="error-bloodGroup" class="error-message"></span>
 
 
       <label>Full Address:</label>
@@ -333,6 +334,12 @@ button[type="submit"]:hover {
       const native = document.getElementById("nativePlace").value.trim();
       if (!native) showError("error-native", "Please enter your native place.");
       else clearError("error-native");
+
+      const blood = document.getElementById("bloodgroup").value;
+      if (!blood) showError("error-bloodGroup", "Please select your blood group.");
+      else clearError("error-bloodGroup");
+
+      
 
       const address = document.getElementById("address").value.trim();
       if (!address) showError("error-address", "Please enter your full address.");
