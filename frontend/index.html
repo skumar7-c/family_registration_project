@@ -348,6 +348,55 @@ button[type="submit"]:hover {
       if (!check.checked) showError("error-confirm", "Please confirm before submitting.");
       else clearError("error-confirm");
 
+
+
+
+
+// ✅ Dynamic Family Member Validation
+  for (let i = 1; i <= memberCount; i++) {
+    const name = document.getElementById(member-name${i}).value.trim();
+    const relation = document.getElementById(member-relation${i}).value.trim();
+    const age = document.getElementById(member-age${i}).value.trim();
+    const gender = document.getElementById(member-gender${i}).value;
+    const qualification = document.getElementById(member-qualification${i}).value;
+    const blood = document.getElementById(member-bloodGroup${i}).value;
+
+    if (!name) {
+      showError(error-member-name${i}, "Enter name");
+    } else {
+      clearError(error-member-name${i});
+    }
+
+    if (!relation) {
+      showError(error-member-relation${i}, "Enter relation");
+    } else {
+      clearError(error-member-relation${i});
+    }
+
+    if (!age || isNaN(age) || age <= 0) {
+      showError(error-member-age${i}, "Enter valid age");
+    } else {
+      clearError(error-member-age${i});
+    }
+
+    if (!gender) {
+      showError(error-member-gender${i}, "Select gender");
+    } else {
+      clearError(error-member-gender${i});
+    }
+
+    if (!qualification) {
+      showError(error-member-qualification${i}, "Select qualification");
+    } else {
+      clearError(error-member-qualification${i});
+    }
+
+    if (!blood) {
+      showError(error-member-bloodGroup${i}, "Select blood group");
+    } else {
+      clearError(error-member-bloodGroup${i});
+    }
+  }
       return isValid;
     }
 
@@ -452,14 +501,10 @@ function removeMember(id) {
   }
 }
 
-
-
  const localityOptions = {
       jaipur: ["Vaishali Nagar", "Malviya Nagar", "Mansarovar", "Jagatpura", "C-Scheme"],
       Chittorgarh: ["Chanderiya","Gandhi Chowk", "Gangrar", "Bhilwara", "Rajendra Nagar", "Pratap Nagar","Hamirgarh"]
     };
-
-
 
     function updateLocalities() {
       const city = document.getElementById("city").value;
@@ -534,71 +579,6 @@ function submitForm(event) {
 
   return false;
 }
-
-
-    //member validation part
-    function validateForm() {
-  let isValid = true;
-
-  for (let i = 1; i <= memberCount; i++) {
-    const name = document.getElementById(`member-name${i}`).value.trim();
-    const relation = document.getElementById(`member-relation${i}`).value.trim();
-    const age = document.getElementById(`member-age${i}`).value.trim();
-    const gender = document.getElementById(`member-gender${i}`).value;
-  const qualification = document.getElementById(`member-qualification${i}`).value;
-
-    const blood = document.getElementById(`member-bloodGroup${i}`).value;
-
-    if (!name) {
-      document.getElementById(`error-member-name${i}`).innerText = "Enter name";
-      isValid = false;
-    } else {
-      document.getElementById(`error-member-name${i}`).innerText = "";
-    }
-
-    if (!relation) {
-      document.getElementById(`error-member-relation${i}`).innerText = "Enter relation";
-      isValid = false;
-    } else {
-      document.getElementById(`error-member-relation${i}`).innerText = "";
-    }
-
-    if (!age || isNaN(age) || age <= 0) {
-      document.getElementById(`error-member-age${i}`).innerText = "Enter valid age";
-      isValid = false;
-    } else {
-      document.getElementById(`error-member-age${i}`).innerText = "";
-    }
-
-    if (!gender) {
-      document.getElementById(`error-member-gender${i}`).innerText = "Select gender";
-      isValid = false;
-    } else {
-      document.getElementById(`error-member-gender${i}`).innerText = "";
-    }
-
-
-
-    if (!qualification) {
-      document.getElementById(`error-member-qualification${i}`).innerText = "Enter relation";
-      isValid = false;
-    } else {
-      document.getElementById(`error-member-qualification${i}`).innerText = "";
-    }
-    
-
-    if (!blood) {
-      document.getElementById(`error-member-blood${i}`).innerText = "Select blood group";
-      isValid = false;
-    } else {
-      document.getElementById(`error-member-blood${i}`).innerText = "";
-    }
-  }
-
-  return isValid;
-}
-
-
   </script>
 </body>
 </html> 
