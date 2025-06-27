@@ -222,18 +222,17 @@ button[type="submit"]:hover {
 
     <label for="city">City:</label>
     <select id="city" name="city" onchange="updateLocalities()">
- <    option value="">Select City</option>
+       <option value="">Select City</option>
       <option value="jaipur">Jaipur</option>
       <option value="Chittorgarh">Chittorgarh</option>
-    <span id="error-city" class="error-message"></span>
     </select>
+    <span id="error-city" class="error-message"></span>
 
     <label for="locality">Locality:</label>
     <select id="locality" name="locality">
     <option value="">Select Locality</option>
-    <span id="error-locality" class="error-message"></span>
-
     </select>
+    <span id="error-locality" class="error-message"></span>
 
       <label>Occupation:</label>
       <input type="text" id="occupation" name="occupation[]" placeholder="Enter your occupation...">
