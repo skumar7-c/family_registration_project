@@ -180,12 +180,12 @@ button[type="submit"]:hover {
     <marquee behavior="scroll" direction="left">Welcome to Family Registration Portal</marquee>
   </header>
 
-  <form    action="/submit-form" method="POST" enctype="multipart/form-data"  onsubmit="return validateForm(event);"  novalidate>
+  <form    action="/submit-form" method="POST" enctype="multipart/form-data"  onsubmit="return validateForm();"  novalidate>
     <div class="form-section">
       <h3 style="color: #b73c0b;">Personal Information</h3>
 
       <div class="profile-pic-container">
-        <input type="file" id="profile"   name="profileImage"  accept="image/*" onchange="loadProfileImage(this)" required>
+        <input type="file" id="profile"  name="profileImage"  accept="image/*" onchange="loadProfileImage(this)" required>
 
         <label for="profile" class="profile-label" id="profileImage"></label>
       </div>
