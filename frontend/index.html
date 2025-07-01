@@ -365,7 +365,7 @@ button[type="submit"]:hover {
       clearError(`error-member-relation${i}`);
     }
 
-    if (!age || isNaN(age) || age <= 0 ||age<=125) {
+    if (!age || isNaN(age) || age >= 1 ||age<=125) {
       showError(`error-member-age${i}`, "Please enter valid age");
     } else {
       clearError(`error-member-age${i}`);
