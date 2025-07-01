@@ -18,8 +18,23 @@
         const div = document.createElement('div');
         div.innerHTML = `
           <hr/>
+          <p><strong>profileImage:</strong> ${family.profileImage}</p>
           <p><strong>Name:</strong> ${family.familyHead}</p>
           <p><strong>Email:</strong> ${family.email}</p>
+          <p><strong>DOB:</strong> ${family.dob}</p>
+          <p><strong>Phone number:</strong> ${family.phone}</p>
+          <p><strong>Gender:</strong> ${family.gender}</p>
+          <p><strong>Locality:</strong> ${family.locality}</p>
+          <p><strong>Occupation:</strong> ${family.occupation}</p>
+          <p><strong>Goatra:</strong> ${family.goatra}</p>
+          <p><strong>nativePlace:</strong> ${family.nativeePlace}</p>
+          <p><strong>bloodGroup:</strong> ${family.bloodGroup}</p>
+          <p><strong>Address:</strong> ${family.addrss}</p>
+          <p><strong>members:</strong> ${family.members}</p>
+
+          <p><strong>Created Date:</strong> ${family.createdAt}</p>
+          <p><strong>Updated Date:</strong> ${family.updatedAt}</p>
+
           <p><strong>Status:</strong> ${family.status || 'Pending'}</p>
           <button onclick="updateStatus('${family._id}', 'approved')">Approved ✅</button>
           <button onclick="updateStatus('${family._id}', 'rejected')">Rejected ❌</button>
