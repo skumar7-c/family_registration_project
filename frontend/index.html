@@ -365,7 +365,7 @@ button[type="submit"]:hover {
       clearError(`error-member-relation${i}`);
     }
 
-    if (!age || isNaN(age) || age <= 0) {
+    if (!age || isNaN(age) || age <= 0 ||age<=125) {
       showError(`error-member-age${i}`, "Please enter valid age");
     } else {
       clearError(`error-member-age${i}`);
@@ -436,7 +436,7 @@ function addFamilyMember() {
 
 
     <label>Age:</label>
-    <input type="number" name="age[]" min="0" id="member-age${memberCount}" required>
+    <input type="number" name="age[]" min="0"  max="125" id="member-age${memberCount}" required>
       <span id="error-member-age${memberCount}" class="error-message"></span>
       
     <label for="member-marital-status">Marital Status:</label>
