@@ -60,8 +60,8 @@ app.post('/submit-form', upload.single('files'), async (req, res) => {
     const {
       familyHead, gender, dob, phone, email, city, locality,
       occupation, gotra, nativePlace, bloodGroup,
-      address, memberName, relation, age,
-      maritalStatus, qualification, occupation: memberOccupation,
+      address, memberName, memberRelation, memberAge,
+      memberMaritalStatus, memberQualification, memberBloodGroup ,Occupation: memberOccupation,
     } = req.body;
 
     console.log("🟢 Received Form Data:", req.body);
@@ -83,22 +83,22 @@ app.post('/submit-form', upload.single('files'), async (req, res) => {
       memberName.forEach((_, i) => {
         members.push({
           name: memberName[i],
-          relation: relation[i],
-          age: parseInt(age[i]),
-          maritalStatus: maritalStatus[i],
-          bloodGroup: bloodGroup[i],
-          qualification: qualification[i],
+          relation: memberRelation[i],
+          age: parseInt(memberAge[i]),
+          maritalStatus: memberMaritalStatus[i],
+          bloodGroup: memberBloodGroup[i],
+          qualification: memberQualification[i],
           occupation: memberOccupation[i]
         });
       });
     } else if (memberName) {
       members.push({
         name: memberName,
-        relation,
-        age: parseInt(age),
-        maritalStatus,
-        bloodGroup,
-        qualification,
+        relation :memberRelation,
+        age: parseInt(memberAge),
+        maritalStatus:memberMaritalStatus,
+        bloodGroup:memberBloodgroup,
+        qualification:memberQualification,
         occupation: memberOccupation
       });
     }
