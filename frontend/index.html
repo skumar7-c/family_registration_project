@@ -408,10 +408,10 @@ function addFamilyMember() {
     <h4>Member #${memberId}</h4>
 
     <label>Enter the name of family member:</label>
-    <input type="text" name="member-name[]" id="member-name${memberCount}" placeholder="Enter the name of family member..." required>
+    <input type="text" name="memberName[]" id="member-name${memberCount}" placeholder="Enter the name of family member..." required>
       <span id="error-member-name${memberCount}" class="error-message"></span>
 
-    <label for="member-relation">Relation:</label>
+    <label for="member-relation" name="memberRelation[]">Relation:</label>
     <select name="relation[]" id="member-relation${memberCount}" required>
       <option value="">Select Relation</option>
         <option value="Father">Father</option>
@@ -436,11 +436,11 @@ function addFamilyMember() {
 
 
     <label>Age:</label>
-    <input type="number" name="age[]" min="0"  max="125" id="member-age${memberCount}" required>
+    <input type="number" name="memberAge[]" min="0"  max="125" id="member-age${memberCount}" required>
       <span id="error-member-age${memberCount}" class="error-message"></span>
       
     <label for="member-marital-status">Marital Status:</label>
-    <select name="maritalStatus[]" id="member-marital-status${memberCount}" required>
+    <select name="memberMaritalStatus[]" id="member-marital-status${memberCount}" required>
       <option value="">Select</option>
       <option value="Unmarried">Unmarried</option>
       <option value="Married">Married</option>
@@ -450,7 +450,7 @@ function addFamilyMember() {
       <span id="error-member-marital-status${memberCount}" class="error-message"></span>
 
     <label for="member-bloodGroup">Blood Group:</label>
-    <select name="bloodGroup[]"  id="member-bloodGroup${memberCount}" required>
+    <select name="memberBloodGroup[]"  id="member-bloodGroup${memberCount}" required>
       <option value="">Select</option>
       <option value="A+">A+</option><option value="A-">A-</option>
       <option value="B+">B+</option><option value="B-">B-</option>
@@ -460,7 +460,7 @@ function addFamilyMember() {
       <span id="error-member-bloodGroup${memberCount}" class="error-message"></span>
 
     <label for="member-qualification">Qualification:</label>
-    <select name="qualification[]" id="member-qualification${memberCount}" required>
+    <select name="memberQualification[]" id="member-qualification${memberCount}" required>
       <option value="">Select</option>
       <option value="Illiterate">Illiterate</option>
       <option value="Below 10th">Below 10th</option>
@@ -474,7 +474,7 @@ function addFamilyMember() {
     <span id="error-member-qualification${memberCount}" class="error-message"></span>
 
     <label>Occupation:</label>
-    <input type="text" name="occupation[]">
+    <input type="text" name="memberOccupation[]">
   `;
   wrapper.appendChild(div);
 }
