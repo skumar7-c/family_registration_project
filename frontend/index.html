@@ -365,7 +365,7 @@ button[type="submit"]:hover {
       clearError(`error-member-relation${i}`);
     }
 
-    if (!age || isNaN(age) || age>= 1 ||age<=125) {
+    if (!age || isNaN(age) || age<= 1 ||age>=125) {
       showError(`error-member-age${i}`, "Please enter valid age");
     } else {
       clearError(`error-member-age${i}`);
@@ -536,12 +536,12 @@ function submitForm(event) {
   const members = [];
   document.querySelectorAll('#member-wrapper .form-section').forEach(section => {
     const name = section.querySelector('input[name="memberName[]"]').value;
-    const relation = section.querySelector('input[name="relation[]"]').value;
-    const age = section.querySelector('input[name="age[]"]').value;
-    const maritalStatus = section.querySelector('select[name="maritalStatus[]"]').value;
-    const bloodGroup = section.querySelector('select[name="bloodGroup[]"]').value;
-    const qualification = section.querySelector('select[name="qualification"]').value;
-    const occupation = section.querySelector('input[name="occupation[]"]').value;
+    const relation = section.querySelector('input[name="memberRelation[]"]').value;
+    const age = section.querySelector('input[name="memberAge[]"]').value;
+    const maritalStatus = section.querySelector('select[name="memberMaritalStatus[]"]').value;
+    const bloodGroup = section.querySelector('select[name="memberBloodGroup[]"]').value;
+    const qualification = section.querySelector('select[name="memberQualification"]').value;
+    const occupation = section.querySelector('input[name="memberOccupation[]"]').value;
     
     members.push({ name, relation, age, maritalStatus, bloodGroup, qualification, occupation });
   });
