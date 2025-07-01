@@ -61,7 +61,7 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
       familyHead, gender, dob, phone, email, city, locality,
       occupation, gotra, nativePlace, bloodGroup,
       address, memberName, memberRelation, memberAge,
-      memberMaritalStatus, memberQualification, memberBloodGroup ,Occupation: memberOccupation,
+      memberMaritalStatus, memberQualification, memberBloodGroup ,memberOccupation,
     } = req.body;
 
     console.log("🟢 Received Form Data:", req.body);
