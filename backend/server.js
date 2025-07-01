@@ -55,7 +55,7 @@ app.get('/', (req, res) => {
 });
 
 // Registration route
-app.post('/submit-form', upload.single('files'), async (req, res) => {
+app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
   try {
     const {
       familyHead, gender, dob, phone, email, city, locality,
@@ -97,7 +97,7 @@ app.post('/submit-form', upload.single('files'), async (req, res) => {
         relation :memberRelation,
         age: parseInt(memberAge),
         maritalStatus:memberMaritalStatus,
-        bloodGroup:memberBloodgroup,
+        bloodGroup:memberBloodGroup,
         qualification:memberQualification,
         occupation: memberOccupation
       });
