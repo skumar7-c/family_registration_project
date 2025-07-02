@@ -18,7 +18,7 @@ app.use(cors());
 app.use(session({
   secret: 'mysecretkey',
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: true
 }));
 
 // Static & view engine
@@ -172,9 +172,6 @@ app.get('/dashboard', (req, res) => {
 app.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/login'));
 });
-
-
-app.set('view engine', 'ejs');
 
 // Render login form
 app.get('/admin-login', (req, res) => {
