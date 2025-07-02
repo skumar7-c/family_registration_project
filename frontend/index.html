@@ -537,10 +537,11 @@ function handleFormSubmit(event) {
   event.preventDefault();
   
 if(!validateForm()){
-    if (firstInvalidField) {
-      console.log("Scrolling to:", firstInvalidField.id);
-      firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      firstInvalidField.focus();
+if (firstInvalidField) {
+  setTimeout(() => {
+    firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    firstInvalidField.focus({ preventScroll: true });
+  }, 200);
     }
 return false;
 }
