@@ -1,15 +1,45 @@
 const express = require('express');
 const router = express.Router();
 const Family = require('../models/family');
-const sendEmail = require('../utils/sendEmail'); // utils/sendEmail.js must exist
+const sendEmail = require('../utils/sendEmail');
 
-// ✅ 1. Admin Panel (Renders admin.ejs)
-router.get('/', (req, res) => {
-  res.render('admin'); // Ensure 'admin.ejs' exists in 'views' folder
+// ✅ Admin credentials
+const ADMIN_EMAIL = "satyendrakumar25588@gmail.com";
+const ADMIN_PASSWORD = "Sat@#123";
+
+// ✅ Middleware to check if admin is authenticated
+function isAuthenticated(req, res, next) {
+  if (req.session && req.session.adminLoggedIn) {
+    return next();
+  }
+  return res.status(403).send('Access denied. Please login as admin.');
+}
+
+// ✅ Admin login route
+router.post('/login', (req, res) => {
+  const { email, password } = req.body;
+
+  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    req.session.adminLoggedIn = true;
+    return res.json({ success: true });
+  }
+
+  return res.json({ success: false, message: 'Invalid credentials' });
 });
 
-// ✅ 2. Get All Families (For Display in Admin Panel)
-router.get('/families', async (req, res) => {
+// ✅ Admin logout route
+router.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/admin-login.html'); // Change to appropriate logout redirect page
+});
+
+// ✅ Admin dashboard page (protected)
+router.get('/', isAuthenticated, (req, res) => {
+  res.render('admin'); // Ensure views/admin.ejs exists
+});
+
+// ✅ Fetch all family submissions (protected)
+router.get('/families', isAuthenticated, async (req, res) => {
   try {
     const families = await Family.find().sort({ createdAt: -1 });
     res.json(families);
@@ -19,8 +49,8 @@ router.get('/families', async (req, res) => {
   }
 });
 
-// ✅ 3. Approve/Reject + Send Email Notification
-router.post('/families/:id/:status', async (req, res) => {
+// ✅ Approve/Reject a family (protected)
+router.post('/families/:id/:status', isAuthenticated, async (req, res) => {
   const { id, status } = req.params;
 
   try {
@@ -33,19 +63,19 @@ router.post('/families/:id/:status', async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Update status
+    // Update the status
     family.status = status;
     await family.save();
 
-    // Send email if email exists
+    // Send email if email is available
     if (family.email) {
       const subject = `Registration ${status === 'approved' ? 'Approved ✅' : 'Rejected ❌'}`;
       const loginLink = process.env.LOGIN_LINK || 'https://family-registration-project-12.onrender.com/login';
 
       const message =
         status === 'approved'
-          ? `Hi ${family.familyHead},\nYour registration has been approved! 🎉\nYour username is your email address and password is your date of birth.\n\nLogin here:\n${loginLink}`
-          :` Hi ${family.familyHead},\n\nWe regret to inform you that your registration has been rejected.\n\nThank you for your interest.`;
+          ? `Hi ${family.familyHead},\n\nYour registration has been approved! 🎉\n\nLogin here: ${loginLink}\nYour username is your email address, and your password is your Date of Birth (DOB).`
+          : `Hi ${family.familyHead},\n\nWe regret to inform you that your registration has been rejected.\n\nThank you for your interest.`;
 
       await sendEmail(family.email, subject, message);
       console.log(`📧 Email sent to ${family.email}`);
@@ -57,42 +87,5 @@ router.post('/families/:id/:status', async (req, res) => {
     res.status(500).json({ error: 'Failed to update status or send email' });
   }
 });
-const ADMIN_EMAIL = "satyendrakumar25588@gmail.com";
-const ADMIN_PASSWORD = "Sat@#123";
 
-// Middleware to check if admin is logged in
-function isAuthenticated(req, res, next) {
-  if (req.session && req.session.adminLoggedIn) {
-    return next();
-  }
-  return res.status(403).send('Access denied. Please login as admin.');
-}
-
-// Admin login route
-router.post('/login', (req, res) => {
-  const { email, password } = req.body;
-  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-    req.session.adminLoggedIn = true;
-    return res.json({ success: true });
-  }
-  res.json({ success: false, message: 'Invalid credentials' });
-});
-
-// Logout route (optional)
-router.get('/logout', (req, res) => {
-  req.session.destroy();
-  res.redirect('/admin-login.html');
-});
-
-// Secure routes using the middleware
-router.get('/families', isAuthenticated, async (req, res) => {
-  const families = await Family.find();
-  res.json(families);
-});
-
-router.post('/families/:id/:status', isAuthenticated, async (req, res) => {
-  const { id, status } = req.params;
-  await Family.findByIdAndUpdate(id, { status });
-  res.send(`Family ${status}`);
-});
-module.exports = router;
+module.exports = router;
