@@ -5,6 +5,7 @@
   <style>
     body {
       font-family: Arial, sans-serif;
+      margin: 20px;
     }
 
     .header {
@@ -14,17 +15,37 @@
       margin-bottom: 10px;
     }
 
-    .summary {
-      margin-bottom: 20px;
-      background-color: #f8f8f8;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+    .summary-box {
+      display: flex;
+      gap: 20px;
+      background-color: #f0f0f0;
+      border: 2px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
     }
 
-    .summary p {
-      margin: 6px 0;
-      font-size: 16px;
+    .summary-item {
+      flex: 1;
+      background-color: #fff;
+      border: 1px solid #bbb;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .filters {
+      margin-bottom: 20px;
+    }
+
+    .filters label {
+      margin-right: 10px;
+    }
+
+    .filters select {
+      margin-right: 20px;
+      padding: 5px 8px;
+      font-size: 14px;
     }
 
     .family-container {
@@ -53,7 +74,7 @@
       background-color: transparent;
       border: none;
       font-size: 16px;
-      color: maroon;
+      color: blue;
       text-decoration: underline;
     }
 
@@ -65,7 +86,7 @@
       background-color: #28a745;
       color: white;
       border: none;
-      padding: 18px 22px;
+      padding: 12px 18px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
@@ -84,51 +105,93 @@
     <button class="add-admin-btn" onclick="handleAddAdmin()">+ Add Admin</button>
   </div>
 
-  <!-- Summary -->
-  <div class="summary" id="summary-stats">
-    <p><strong>Total Registrations:</strong> 0</p>
-    <p><strong>Total Approved:</strong> 0</p>
-    <p><strong>Total Rejected:</strong> 0</p>
-    <p><strong>Total Pending:</strong> 0</p>
+  <!-- Summary Section -->
+  <div class="summary-box" id="summary-stats">
+    <div class="summary-item"><strong>Total Registrations</strong><br><span id="totalCount">0</span></div>
+    <div class="summary-item"><strong>Approved</strong><br><span id="approvedCount">0</span></div>
+    <div class="summary-item"><strong>Rejected</strong><br><span id="rejectedCount">0</span></div>
+    <div class="summary-item"><strong>Pending</strong><br><span id="pendingCount">0</span></div>
   </div>
 
-  <!-- Family Containers -->
+  <!-- Filter Controls -->
+  <div class="filters">
+    <label for="statusFilter">Filter by Status:</label>
+    <select id="statusFilter" onchange="applyFilters()">
+      <option value="">All</option>
+      <option value="approved">Approved</option>
+      <option value="rejected">Rejected</option>
+      <option value="pending">Pending</option>
+    </select>
+
+    <label for="cityFilter">Filter by City:</label>
+    <select id="cityFilter" onchange="applyFilters()">
+      <option value="">All</option>
+    </select>
+  </div>
+
+  <!-- Families -->
   <div id="families"></div>
 
   <script>
+    let allData = [];
+
     async function fetchFamilies() {
       const res = await fetch('/admin/families');
       const data = await res.json();
+      allData = data;
+      populateCityFilter(data);
+      applyFilters();
+    }
+
+    function populateCityFilter(data) {
+      const citySet = new Set();
+      data.forEach(f => {
+        if (f.locality) citySet.add(f.locality);
+      });
+
+      const cityFilter = document.getElementById('cityFilter');
+      cityFilter.innerHTML = '<option value="">All</option>';
+      [...citySet].sort().forEach(city => {
+        const option = document.createElement('option');
+        option.value = city;
+        option.textContent = city;
+        cityFilter.appendChild(option);
+      });
+    }
+
+    function applyFilters() {
+      const status = document.getElementById('statusFilter').value;
+      const city = document.getElementById('cityFilter').value;
+      const filtered = allData.filter(family => {
+        const matchStatus = status ? (family.status || 'pending') === status : true;
+        const matchCity = city ? family.locality === city : true;
+        return matchStatus && matchCity;
+      });
+
+      renderFamilies(filtered);
+      updateSummary(allData);
+    }
+
+    function renderFamilies(data) {
       const container = document.getElementById('families');
-      const summary = document.getElementById('summary-stats');
       container.innerHTML = '';
 
-      let approved = 0;
-      let rejected = 0;
-      let pending = 0;
-
       data.forEach((family, index) => {
-        if (family.status === 'approved') approved++;
-        else if (family.status === 'rejected') rejected++;
-        else pending++;
-
         const div = document.createElement('div');
         div.classList.add('family-container');
 
         div.innerHTML = `
           <div class="family-heading">Family Registration - ${index + 1}</div>
-
           <p><strong>Name:</strong> ${family.familyHead}</p>
           <p><strong>Email:</strong> ${family.email}</p>
           <p><strong>DOB:</strong> ${family.dob}</p>
+          <p><strong>City:</strong> ${family.locality || 'N/A'}</p>
           <p><strong>Status:</strong> ${family.status || 'Pending'}</p>
-
           <button class="view-btn" onclick="toggleDetails(${index})">👁️ View</button>
 
           <div class="details" id="details-${index}">
             <p><strong>Phone number:</strong> ${family.phone}</p>
             <p><strong>Gender:</strong> ${family.gender}</p>
-            <p><strong>Locality:</strong> ${family.locality}</p>
             <p><strong>Occupation:</strong> ${family.occupation}</p>
             <p><strong>Goatra:</strong> ${family.goatra}</p>
             <p><strong>Native Place:</strong> ${family.nativeePlace}</p>
@@ -153,21 +216,13 @@
             <button onclick="updateStatus('${family._id}', 'rejected')">❌ Rejected</button>
           </div>
         `;
-
         container.appendChild(div);
       });
-
-      summary.innerHTML = `
-        <p><strong>Total Registrations:</strong> ${data.length}</p>
-        <p><strong>Total Approved:</strong> ${approved}</p>
-        <p><strong>Total Rejected:</strong> ${rejected}</p>
-        <p><strong>Total Pending:</strong> ${pending}</p>
-      `;
     }
 
     function toggleDetails(index) {
       const detailsDiv = document.getElementById(`details-${index}`);
-      detailsDiv.style.display = (detailsDiv.style.display === 'block') ? 'none' : 'block';
+      detailsDiv.style.display = detailsDiv.style.display === 'block' ? 'none' : 'block';
     }
 
     async function updateStatus(id, status) {
@@ -176,7 +231,22 @@
       });
       const result = await res.text();
       alert(result);
-      fetchFamilies(); // Refresh
+      fetchFamilies(); // Refresh data
+    }
+
+    function updateSummary(data) {
+      const total = data.length;
+      let approved = 0, rejected = 0, pending = 0;
+      data.forEach(f => {
+        if (f.status === 'approved') approved++;
+        else if (f.status === 'rejected') rejected++;
+        else pending++;
+      });
+
+      document.getElementById('totalCount').innerText = total;
+      document.getElementById('approvedCount').innerText = approved;
+      document.getElementById('rejectedCount').innerText = rejected;
+      document.getElementById('pendingCount').innerText = pending;
     }
 
     function handleAddAdmin() {
