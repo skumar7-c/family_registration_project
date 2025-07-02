@@ -282,12 +282,15 @@ button[type="submit"]:hover {
       let isValid = true;
       firstInvalidField = null; // Reset each time
 
-  function showError(id, message, focusElementId = null) {
+  function showError(id, message, focusElementId) {
     document.getElementById(id).textContent = message;
          isValid = false;
+  const element = focusElementId ? document.getElementById(focusElementId) : null;
 
-    if (!firstInvalidField && focusElementId) {
-      firstInvalidField = document.getElementById(focusElementId);
+
+    
+    if (!firstInvalidField && element) {
+      firstInvalidField = element;
     } }
   
       function clearError(id) {
@@ -537,26 +540,17 @@ function removeMember(id) {
   // backend part
 function handleFormSubmit(event) {
   event.preventDefault();
-  
-if(!validateForm()){
 
-if (firstInvalidField) {
-  console.log("Scrolling to:", firstInvalidField); // debug
-  setTimeout(() => {
-    firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    
-    // Try to focus after scroll happens
+if (!validateForm()) {
+  if (firstInvalidField) {
     setTimeout(() => {
-      try {
-        firstInvalidField.focus();
-      } catch (e) {
-        console.warn("Could not focus:", e);
-      }
+      firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => firstInvalidField.focus(), 300);
     }, 100);
-  }, 300); // delay for DOM to update
-    }
-return false;
+  }
+  return false;
 }
+
   const form = document.querySelector('form');
   const formData = new FormData(form);
 
