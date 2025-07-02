@@ -27,7 +27,8 @@
 
       const data = await res.json();
       if (data.success) {
-        window.location.href = '/admin-panel.html'; // redirect after login
+        // Redirect to admin dashboard
+        window.location.href = '/admin';
       } else {
         alert(data.message);
       }
@@ -35,4 +36,3 @@
   </script>
 </body>
 </html>
-
