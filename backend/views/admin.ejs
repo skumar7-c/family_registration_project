@@ -15,10 +15,18 @@
     }
 
     .family-container {
-      border: 1px solid green;
+      border: 2px solid green;
       padding: 10px;
       margin-bottom: 15px;
       border-radius: 8px;
+    }
+
+    .family-heading {
+      text-align: center;
+      color: blue;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 10px;
     }
 
     .details {
@@ -44,7 +52,7 @@
       background-color: #28a745;
       color: white;
       border: none;
-      padding: 8px 12px;
+      padding: 18px 22px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 14px;
@@ -77,6 +85,8 @@
         div.classList.add('family-container');
 
         div.innerHTML = `
+          <div class="family-heading">Family Registration - ${index + 1}</div>
+
           <p><strong>Name:</strong> ${family.familyHead}</p>
           <p><strong>Email:</strong> ${family.email}</p>
           <p><strong>DOB:</strong> ${family.dob}</p>
@@ -132,8 +142,8 @@
     }
 
     function handleAddAdmin() {
-      alert('🔒 Add Admin functionality coming soon (you can connect this to a form or route).');
-      // Optionally redirect to /add-admin.html or open a modal.
+      alert('🔒 Add Admin functionality coming soon.');
+      // Optionally redirect to /add-admin.html
       // window.location.href = '/add-admin.html';
     }
 
