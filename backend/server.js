@@ -173,6 +173,15 @@ app.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/login'));
 });
 
+
+app.set('view engine', 'ejs');
+
+// Render login form
+app.get('/admin-login', (req, res) => {
+  res.render('admin-login'); // This will render views/admin-login.ejs
+});
+
+
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
