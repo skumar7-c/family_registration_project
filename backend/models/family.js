@@ -17,6 +17,7 @@ const familySchema = new mongoose.Schema({
   dob: { type: Date ,required:true },
   phone: { type: String },
   email: { type: String, required: true },
+  city: { type: String },
   locality: [{ type: String }],
   occupation: [{ type: String }],
   gotra: [{ type: String }],
