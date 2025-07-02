@@ -285,10 +285,10 @@ button[type="submit"]:hover {
     if (!firstInvalidField && focusElementId) {
       firstInvalidField = document.getElementById(focusElementId);
     }
-    isValid = false;
   }
       function clearError(id) {
         document.getElementById(id).textContent = '';
+            isValid = false;
       }
 
       const profile = document.getElementById("profile");
