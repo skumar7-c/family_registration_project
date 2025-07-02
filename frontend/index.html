@@ -292,7 +292,7 @@ button[type="submit"]:hover {
       }
 
       const profile = document.getElementById("profile");
-      if (!profile.files.length) showError("error-profile", "Please upload a profile image.");
+      if (!profile.files.length) showError("error-profile", "Please upload a profile image." ,"profile");
       else clearError("error-profile");
 
       const name = document.getElementById("headName").value.trim();
@@ -340,11 +340,11 @@ button[type="submit"]:hover {
       
 
       const address = document.getElementById("address").value.trim();
-      if (!address) showError("error-address", "Please enter your full address.");
+      if (!address) showError("error-address", "Please enter your full address." ,"address");
       else clearError("error-address");
 
       const check = document.getElementById("confirmCheck");
-      if (!check.checked) showError("error-confirm", "Please confirm before submitting.");
+      if (!check.checked) showError("error-confirm", "Please confirm before submitting." ,"confirmCheck");
       else clearError("error-confirm");
 
 
@@ -358,44 +358,45 @@ button[type="submit"]:hover {
     const marital = document.getElementById(`member-marital-status${i}`).value;
 
     if (!name) {
-      showError(`error-member-name${i}`, "Please enter your family membername.");
+      showError(`error-member-name${i}`, "Please enter your family membername." ,`member-name${i}`);
     } else {
       clearError(`error-member-name${i}`);
     }
 
     if (!relation) {
-      showError(`error-member-relation${i}`, "Please enter your relation with familyhead.");
+      showError(`error-member-relation${i}`, "Please enter your relation with familyhead." ,`member-relation${i}`);
     } else {
       clearError(`error-member-relation${i}`);
     }
 
     if (!age || isNaN(age) || age<= 1 ||age>=125) {
-      showError(`error-member-age${i}`, "Please enter valid age");
+      showError(`error-member-age${i}`, "Please enter valid age" ,`member-age${i}`);
     } else {
       clearError(`error-member-age${i}`);
     }
     
     if (!qualification) {
-      showError(`error-member-qualification${i}`, " Please select your qualification");
+      showError(`error-member-qualification${i}`, " Please select your qualification",`member-qualification${i}`);
     } else {
       clearError(`error-member-qualification${i}`);
     }
 
 
   if (!marital) {
-      showError(`error-member-marital-status${i}`, "Please select your marital status");
+      showError(`error-member-marital-status${i}`, "Please select your marital status" ,`member-marital-status${i}`);
     } else {
       clearError(`error-member-marital-status${i}`);
     }
     
     if (!blood) {
-      showError(`error-member-bloodGroup${i}`, " Please select blood group");
+      showError(`error-member-bloodGroup${i}`, " Please select blood group",`member-bloodGroup{i}`);
     } else {
       clearError(`error-member-bloodGroup${i}`);
     }
   }
 
   if (firstInvalidField) {
+    console.log("Scrolling to :" ,firstInvalidField.id);
     firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
     firstInvalidField.focus();
   }
