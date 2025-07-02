@@ -2,6 +2,33 @@
 <html>
 <head>
   <title>Admin Panel</title>
+  <style>
+    .family-container {
+      border: 1px solid #aaa;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
+
+    .details {
+      display: none;
+      margin-top: 10px;
+      padding-left: 10px;
+    }
+
+    .view-btn {
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+      font-size: 16px;
+      color: blue;
+      text-decoration: underline;
+    }
+
+    .status-buttons {
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
   <h1>Admin - Family Submissions</h1>
@@ -14,40 +41,58 @@
       const container = document.getElementById('families');
       container.innerHTML = '';
 
-      data.forEach(family => {
+      data.forEach((family, index) => {
         const div = document.createElement('div');
+        div.classList.add('family-container');
+
         div.innerHTML = `
-          <hr/ style="color:red">
-          <p><strong>profileImage:</strong> ${family.profileImage}</p>
           <p><strong>Name:</strong> ${family.familyHead}</p>
           <p><strong>Email:</strong> ${family.email}</p>
           <p><strong>DOB:</strong> ${family.dob}</p>
-          <p><strong>Phone number:</strong> ${family.phone}</p>
-          <p><strong>Gender:</strong> ${family.gender}</p>
-          <p><strong>Locality:</strong> ${family.locality}</p>
-          <p><strong>Occupation:</strong> ${family.occupation}</p>
-          <p><strong>Goatra:</strong> ${family.goatra}</p>
-          <p><strong>nativePlace:</strong> ${family.nativeePlace}</p>
-          <p><strong>bloodGroup:</strong> ${family.bloodGroup}</p>
-          <p><strong>Address:</strong> ${family.addrss}</p>
-          <p><strong>members:</strong></p>
-          <p><strong>memberName :</strong> ${family.memberName}</p>
-          <p><strong>memberRelation:</strong> ${family.memberRelation}</p>
-          <p><strong>memberAge:</strong> ${family.memberAge}</p>
-          <p><strong>memberMaritalStatus:</strong> ${family.memberMaritalStatus}</p>
-          <p><strong>memberBloodGroup:</strong> ${family.memberBloodGroup}</p>
-          <p><strong>memberQualification:</strong> ${family.memberQualification}</p>
-          <p><strong>memberOccupation:</strong> ${family.memberOccupation}</p>
-
-          <p><strong>Created Date:</strong> ${family.createdAt}</p>
-          <p><strong>Updated Date:</strong> ${family.updatedAt}</p>
-
           <p><strong>Status:</strong> ${family.status || 'Pending'}</p>
-          <button onclick="updateStatus('${family._id}', 'approved')">Approved ✅</button>
-          <button onclick="updateStatus('${family._id}', 'rejected')">Rejected ❌</button>
+
+          <button class="view-btn" onclick="toggleDetails(${index})">👁️ View</button>
+
+          <div class="details" id="details-${index}">
+            <p><strong>Phone number:</strong> ${family.phone}</p>
+            <p><strong>Gender:</strong> ${family.gender}</p>
+            <p><strong>Locality:</strong> ${family.locality}</p>
+            <p><strong>Occupation:</strong> ${family.occupation}</p>
+            <p><strong>Goatra:</strong> ${family.goatra}</p>
+            <p><strong>Native Place:</strong> ${family.nativeePlace}</p>
+            <p><strong>Blood Group:</strong> ${family.bloodGroup}</p>
+            <p><strong>Address:</strong> ${family.addrss}</p>
+
+            <p><strong>Members:</strong></p>
+            <p><strong>Name:</strong> ${family.memberName}</p>
+            <p><strong>Relation:</strong> ${family.memberRelation}</p>
+            <p><strong>Age:</strong> ${family.memberAge}</p>
+            <p><strong>Marital Status:</strong> ${family.memberMaritalStatus}</p>
+            <p><strong>Blood Group:</strong> ${family.memberBloodGroup}</p>
+            <p><strong>Qualification:</strong> ${family.memberQualification}</p>
+            <p><strong>Occupation:</strong> ${family.memberOccupation}</p>
+
+            <p><strong>Created At:</strong> ${new Date(family.createdAt).toLocaleString()}</p>
+            <p><strong>Updated At:</strong> ${new Date(family.updatedAt).toLocaleString()}</p>
+          </div>
+
+          <div class="status-buttons">
+            <button onclick="updateStatus('${family._id}', 'approved')">✅ Approve</button>
+            <button onclick="updateStatus('${family._id}', 'rejected')">❌ Reject</button>
+          </div>
         `;
+
         container.appendChild(div);
       });
+    }
+
+    function toggleDetails(index) {
+      const detailsDiv = document.getElementById(`details-${index}`);
+      if (detailsDiv.style.display === 'none' || detailsDiv.style.display === '') {
+        detailsDiv.style.display = 'block';
+      } else {
+        detailsDiv.style.display = 'none';
+      }
     }
 
     async function updateStatus(id, status) {
@@ -56,7 +101,7 @@
       });
       const result = await res.text();
       alert(result);
-      fetchFamilies();
+      fetchFamilies(); // Refresh data after status update
     }
 
     fetchFamilies();
