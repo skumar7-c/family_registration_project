@@ -543,10 +543,17 @@ if(!validateForm()){
 if (firstInvalidField) {
   console.log("Scrolling to:", firstInvalidField); // debug
   setTimeout(() => {
-    const y = firstInvalidField.getBoundingClientRect().top + window.scrollY - 100;
-    window.scrollTo({ top: y, behavior: 'smooth' });
-    firstInvalidField.focus({ preventScroll: true });
-  }, 200);
+    firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    
+    // Try to focus after scroll happens
+    setTimeout(() => {
+      try {
+        firstInvalidField.focus();
+      } catch (e) {
+        console.warn("Could not focus:", e);
+      }
+    }, 100);
+  }, 300); // delay for DOM to update
     }
 return false;
 }
