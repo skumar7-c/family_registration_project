@@ -57,10 +57,11 @@
 
     .family-heading {
       text-align: center;
-      color: blue;
-      font-weight: bold;
+      color: brown;
+      font-weight: bolder;
       font-size: 18px;
       margin-bottom: 10px;
+     text-decoration:underline;
     }
 
     .details {
@@ -126,6 +127,8 @@
     <label for="cityFilter">Filter by City:</label>
     <select id="cityFilter" onchange="applyFilters()">
       <option value="">All</option>
+      <option value="Jaipur">Jaipur</option>
+      <option value="Chittorgarh">Chittorgarh</option>
     </select>
   </div>
 
@@ -139,29 +142,13 @@
       const res = await fetch('/admin/families');
       const data = await res.json();
       allData = data;
-      populateCityFilter(data);
       applyFilters();
-    }
-
-    function populateCityFilter(data) {
-      const citySet = new Set();
-      data.forEach(f => {
-        if (f.locality) citySet.add(f.locality);
-      });
-
-      const cityFilter = document.getElementById('cityFilter');
-      cityFilter.innerHTML = '<option value="">All</option>';
-      [...citySet].sort().forEach(city => {
-        const option = document.createElement('option');
-        option.value = city;
-        option.textContent = city;
-        cityFilter.appendChild(option);
-      });
     }
 
     function applyFilters() {
       const status = document.getElementById('statusFilter').value;
       const city = document.getElementById('cityFilter').value;
+
       const filtered = allData.filter(family => {
         const matchStatus = status ? (family.status || 'pending') === status : true;
         const matchCity = city ? family.locality === city : true;
@@ -216,6 +203,7 @@
             <button onclick="updateStatus('${family._id}', 'rejected')">❌ Rejected</button>
           </div>
         `;
+
         container.appendChild(div);
       });
     }
@@ -237,6 +225,7 @@
     function updateSummary(data) {
       const total = data.length;
       let approved = 0, rejected = 0, pending = 0;
+
       data.forEach(f => {
         if (f.status === 'approved') approved++;
         else if (f.status === 'rejected') rejected++;
