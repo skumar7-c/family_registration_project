@@ -4,14 +4,27 @@
   <title>Admin Panel</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial, sans-serif ,;
     }
 
     .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .summary {
       margin-bottom: 20px;
+      background-color: #f8f8f8;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    .summary p {
+      margin: 6px 0;
+      font-size: 16px;
     }
 
     .family-container {
@@ -65,12 +78,21 @@
 </head>
 <body>
 
-  <!-- Header with title and Add Admin button -->
+  <!-- Header -->
   <div class="header">
     <h1>Admin - Family Submissions</h1>
     <button class="add-admin-btn" onclick="handleAddAdmin()">+ Add Admin</button>
   </div>
 
+  <!-- Summary -->
+  <div class="summary" id="summary-stats">
+    <p><strong>Total Registrations:</strong> 0</p>
+    <p><strong>Total Approved:</strong> 0</p>
+    <p><strong>Total Rejected:</strong> 0</p>
+    <p><strong>Total Pending:</strong> 0</p>
+  </div>
+
+  <!-- Family Containers -->
   <div id="families"></div>
 
   <script>
@@ -78,9 +100,18 @@
       const res = await fetch('/admin/families');
       const data = await res.json();
       const container = document.getElementById('families');
+      const summary = document.getElementById('summary-stats');
       container.innerHTML = '';
 
+      let approved = 0;
+      let rejected = 0;
+      let pending = 0;
+
       data.forEach((family, index) => {
+        if (family.status === 'approved') approved++;
+        else if (family.status === 'rejected') rejected++;
+        else pending++;
+
         const div = document.createElement('div');
         div.classList.add('family-container');
 
@@ -125,6 +156,13 @@
 
         container.appendChild(div);
       });
+
+      summary.innerHTML = `
+        <p><strong>Total Registrations:</strong> ${data.length}</p>
+        <p><strong>Total Approved:</strong> ${approved}</p>
+        <p><strong>Total Rejected:</strong> ${rejected}</p>
+        <p><strong>Total Pending:</strong> ${pending}</p>
+      `;
     }
 
     function toggleDetails(index) {
@@ -143,8 +181,6 @@
 
     function handleAddAdmin() {
       alert('🔒 Add Admin functionality coming soon.');
-      // Optionally redirect to /add-admin.html
-      // window.location.href = '/add-admin.html';
     }
 
     fetchFamilies();
