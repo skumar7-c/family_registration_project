@@ -278,20 +278,20 @@ button[type="submit"]:hover {
     let firstInvalidField = null; // Step 1
     function validateForm() {
       let isValid = true;
+      firstInvalidField = null; // Reset each time
 
   function showError(id, message, focusElementId = null) {
     document.getElementById(id).textContent = message;
+         isValid = false;
 
     if (!firstInvalidField && focusElementId) {
       firstInvalidField = document.getElementById(focusElementId);
-    }
+    } }
   
       function clearError(id) {
         document.getElementById(id).textContent = '';
       }
-         isValid = false;
 
-  }
       const profile = document.getElementById("profile");
       if (!profile.files.length) showError("error-profile", "Please upload a profile image." ,"profile");
       else clearError("error-profile");
