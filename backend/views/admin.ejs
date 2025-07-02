@@ -3,8 +3,19 @@
 <head>
   <title>Admin Panel</title>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
     .family-container {
-      border: 1px solid #aaa;
+      border: 1px solid green;
       padding: 10px;
       margin-bottom: 15px;
       border-radius: 8px;
@@ -28,10 +39,30 @@
     .status-buttons {
       margin-top: 10px;
     }
+
+    .add-admin-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .add-admin-btn:hover {
+      background-color: #218838;
+    }
   </style>
 </head>
 <body>
-  <h1>Admin - Family Submissions</h1>
+
+  <!-- Header with title and Add Admin button -->
+  <div class="header">
+    <h1>Admin - Family Submissions</h1>
+    <button class="add-admin-btn" onclick="handleAddAdmin()">+ Add Admin</button>
+  </div>
+
   <div id="families"></div>
 
   <script>
@@ -77,8 +108,8 @@
           </div>
 
           <div class="status-buttons">
-            <button onclick="updateStatus('${family._id}', 'approved')">✅ Approve</button>
-            <button onclick="updateStatus('${family._id}', 'rejected')">❌ Reject</button>
+            <button onclick="updateStatus('${family._id}', 'approved')">✅ Approved</button>
+            <button onclick="updateStatus('${family._id}', 'rejected')">❌ Rejected</button>
           </div>
         `;
 
@@ -88,11 +119,7 @@
 
     function toggleDetails(index) {
       const detailsDiv = document.getElementById(`details-${index}`);
-      if (detailsDiv.style.display === 'none' || detailsDiv.style.display === '') {
-        detailsDiv.style.display = 'block';
-      } else {
-        detailsDiv.style.display = 'none';
-      }
+      detailsDiv.style.display = (detailsDiv.style.display === 'block') ? 'none' : 'block';
     }
 
     async function updateStatus(id, status) {
@@ -101,7 +128,13 @@
       });
       const result = await res.text();
       alert(result);
-      fetchFamilies(); // Refresh data after status update
+      fetchFamilies(); // Refresh
+    }
+
+    function handleAddAdmin() {
+      alert('🔒 Add Admin functionality coming soon (you can connect this to a form or route).');
+      // Optionally redirect to /add-admin.html or open a modal.
+      // window.location.href = '/add-admin.html';
     }
 
     fetchFamilies();
