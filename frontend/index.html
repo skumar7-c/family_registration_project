@@ -277,12 +277,15 @@ button[type="submit"]:hover {
   <script>
     function validateForm() {
       let isValid = true;
+      let firstInvalidField = null; // Step 1
 
-      function showError(id, message) {
-        document.getElementById(id).textContent = message;
-        isValid = false;
-      }
-
+  function showError(id, message, focusElementId = null) {
+    document.getElementById(id).textContent = message;
+    if (!firstInvalidField && focusElementId) {
+      firstInvalidField = document.getElementById(focusElementId);
+    }
+    isValid = false;
+  }
       function clearError(id) {
         document.getElementById(id).textContent = '';
       }
@@ -390,6 +393,12 @@ button[type="submit"]:hover {
       clearError(`error-member-bloodGroup${i}`);
     }
   }
+
+  if (firstInvalidField) {
+    firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    firstInvalidField.focus();
+  }
+      
       return isValid;
     }
 
