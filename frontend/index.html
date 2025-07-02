@@ -285,12 +285,13 @@ button[type="submit"]:hover {
     if (!firstInvalidField && focusElementId) {
       firstInvalidField = document.getElementById(focusElementId);
     }
-  }
+  
       function clearError(id) {
         document.getElementById(id).textContent = '';
-            isValid = false;
       }
+         isValid = false;
 
+  }
       const profile = document.getElementById("profile");
       if (!profile.files.length) showError("error-profile", "Please upload a profile image." ,"profile");
       else clearError("error-profile");
@@ -389,7 +390,7 @@ button[type="submit"]:hover {
     }
     
     if (!blood) {
-      showError(`error-member-bloodGroup${i}`, " Please select blood group",`member-bloodGroup{i}`);
+      showError(`error-member-bloodGroup${i}`, " Please select  your blood group",`member-bloodGroup${i}`);
     } else {
       clearError(`error-member-bloodGroup${i}`);
     }
