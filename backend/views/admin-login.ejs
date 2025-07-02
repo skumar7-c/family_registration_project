@@ -7,9 +7,9 @@
   <h2>Admin Login</h2>
   <form onsubmit="return login(event)">
     <label>Email:</label><br/>
-    <input type="email" id="email" required /><br/>
+    <input type="email" id="email"  placeholder="Please enter admin email..." required /><br/>
     <label>Password:</label><br/>
-    <input type="password" id="password" required /><br/><br/>
+    <input type="password" id="password" placeholder="Please enter admin password..." required /><br/><br/>
     <button type="submit">Login</button>
   </form>
 
@@ -30,7 +30,7 @@
         // Redirect to admin dashboard
         window.location.href = '/admin';
       } else {
-        alert(data.message);
+        document.write(data.message);
       }
     }
   </script>
