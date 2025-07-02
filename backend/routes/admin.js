@@ -57,5 +57,42 @@ router.post('/families/:id/:status', async (req, res) => {
     res.status(500).json({ error: 'Failed to update status or send email' });
   }
 });
+const ADMIN_EMAIL = "satyendrakumar25588@gmail.com";
+const ADMIN_PASSWORD = "Sat@#123";
 
+// Middleware to check if admin is logged in
+function isAuthenticated(req, res, next) {
+  if (req.session && req.session.adminLoggedIn) {
+    return next();
+  }
+  return res.status(403).send('Access denied. Please login as admin.');
+}
+
+// Admin login route
+router.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+    req.session.adminLoggedIn = true;
+    return res.json({ success: true });
+  }
+  res.json({ success: false, message: 'Invalid credentials' });
+});
+
+// Logout route (optional)
+router.get('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/admin-login.html');
+});
+
+// Secure routes using the middleware
+router.get('/families', isAuthenticated, async (req, res) => {
+  const families = await Family.find();
+  res.json(families);
+});
+
+router.post('/families/:id/:status', isAuthenticated, async (req, res) => {
+  const { id, status } = req.params;
+  await Family.findByIdAndUpdate(id, { status });
+  res.send(`Family ${status}`);
+});
 module.exports = router;
