@@ -64,6 +64,14 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
       memberMaritalStatus, memberQualification, memberBloodGroup ,memberOccupation,
     } = req.body;
 
+    // ✅ Parse dynamic members from JSON string
+    const members = JSON.parse(req.body.members || '[]');
+
+    // ✅ Enforce city restriction to Jaipur or Chittorgarh
+    if (!['jaipur', 'Chittorgarh'].includes(city)) {
+      return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
+    }
+    
     console.log("🟢 Received Form Data:", req.body);
 
     // ✅ Validate required fields
