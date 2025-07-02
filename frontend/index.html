@@ -8,6 +8,8 @@
   <style>
   html {
     scroll-behavior: smooth;
+      overflow: auto !important;
+
   }
 body {
   margin: 0;
@@ -16,6 +18,9 @@ body {
   font-family: 'Poppins', 'Times New Roman', serif ;
   text-align: center;
   min-height: 100vh;
+    overflow: auto !important;
+  scroll-behavior: smooth;
+
 }
     header {
       background-color: #4caf50;
@@ -537,9 +542,12 @@ function handleFormSubmit(event) {
   event.preventDefault();
   
 if(!validateForm()){
+
 if (firstInvalidField) {
+  console.log("Scrolling to:", firstInvalidField); // debug
   setTimeout(() => {
-    firstInvalidField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const y = firstInvalidField.getBoundingClientRect().top + window.scrollY - 100;
+    window.scrollTo({ top: y, behavior: 'smooth' });
     firstInvalidField.focus({ preventScroll: true });
   }, 200);
     }
