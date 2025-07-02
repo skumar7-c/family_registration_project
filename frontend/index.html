@@ -275,12 +275,13 @@ button[type="submit"]:hover {
 
   
   <script>
+    let firstInvalidField = null; // Step 1
     function validateForm() {
       let isValid = true;
-      let firstInvalidField = null; // Step 1
 
   function showError(id, message, focusElementId = null) {
     document.getElementById(id).textContent = message;
+
     if (!firstInvalidField && focusElementId) {
       firstInvalidField = document.getElementById(focusElementId);
     }
@@ -295,46 +296,46 @@ button[type="submit"]:hover {
       else clearError("error-profile");
 
       const name = document.getElementById("headName").value.trim();
-      if (!/^[A-Za-z\s]+$/.test(name)) showError("error-headName", " Please fill your name of family head.");
+      if (!/^[A-Za-z\s]+$/.test(name)) showError("error-headName", " Please fill your name of family head." ,"headName");
       else clearError("error-headName");
 
       const dob = document.getElementById("dob").value;
       const dobDate = new Date(dob);
       const minDOB = new Date("1970-01-01");
       const maxDOB = new Date("2025-06-01");
-      if (!dob || dobDate < minDOB || dobDate > maxDOB) showError("error-dob", "DOB must be between 01-01-1970 and 01-06-2025.");
+      if (!dob || dobDate < minDOB || dobDate > maxDOB) showError("error-dob", "DOB must be between 01-01-1970 and 01-06-2025." ,"dob");
       else clearError("error-dob");
 
       const phone = document.getElementById("phone").value.trim();
-      if (!/^[6789]\d{9}$/.test(phone)) showError("error-phone", "Enter valid 10-digit phone starting with 6/7/8/9.");
+      if (!/^[6789]\d{9}$/.test(phone)) showError("error-phone", "Enter valid 10-digit phone starting with 6/7/8/9.","phone");
       else clearError("error-phone");
 
       const email = document.getElementById("email").value.trim();
-      if (!email.includes("@")) showError("error-email", "Please enter a valid email.");
+      if (!email.includes("@")) showError("error-email", "Please enter a valid email." ,"email");
       else clearError("error-email");
 
       const city = document.getElementById("city").value;
-      if (!city) showError("error-city", "Please select your city.");
+      if (!city) showError("error-city", "Please select your city." ,"city");
       else clearError("error-city");
 
       const locality = document.getElementById("locality").value;
-      if (!locality) showError("error-locality", "Please select your locality.");
+      if (!locality) showError("error-locality", "Please select your locality.","locality");
       else clearError("error-locality");
 
       const occupation = document.getElementById("occupation").value.trim();
-      if (!occupation) showError("error-occupation", "Please enter your occupation.");
+      if (!occupation) showError("error-occupation", "Please enter your occupation.","occupation");
       else clearError("error-occupation");
 
       const gotra = document.getElementById("gotra").value.trim();
-      if (!gotra) showError("error-gotra", "Please enter your gotra.");
+      if (!gotra) showError("error-gotra", "Please enter your gotra." ,"gotra");
       else clearError("error-gotra");
 
       const native = document.getElementById("nativePlace").value.trim();
-      if (!native) showError("error-native", "Please enter your native place.");
+      if (!native) showError("error-native", "Please enter your native place." ,"nativePlace");
       else clearError("error-native");
 
       const bloodGroup = document.getElementById("bloodGroup").value;
-      if (!bloodGroup) showError("error-bloodGroup", "Please select your blood group.");
+      if (!bloodGroup) showError("error-bloodGroup", "Please select your blood group." ,"bloodGroup");
       else clearError("error-bloodGroup");
       
 
