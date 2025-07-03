@@ -61,16 +61,14 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
       familyHead, gender, dob, phone, email, city, locality,
       occupation, gotra, nativePlace, bloodGroup,
       address, memberName, memberRelation, memberAge,
-      memberMaritalStatus, memberQualification, memberBloodGroup ,memberOccupation,
+      memberMaritalStatus, memberQualification, memberBloodGroup, memberOccupation,
     } = req.body;
-
-    // ✅ Parse dynamic members from JSON string
-    const members = JSON.parse(req.body.members || '[]');
 
     // ✅ Enforce city restriction to Jaipur or Chittorgarh
     if (!['jaipur', 'chittorgarh'].includes(city?.toLowerCase())) {
-  return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
-}
+      return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
+    }
+
     console.log("🟢 Received Form Data:", req.body);
 
     // ✅ Validate required fields
@@ -84,7 +82,7 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
       return res.status(400).send("Invalid Date format");
     }
 
-    // ✅ Handle members
+    // ✅ Handle members from form
     const members = [];
     if (Array.isArray(memberName)) {
       memberName.forEach((_, i) => {
@@ -101,11 +99,11 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
     } else if (memberName) {
       members.push({
         name: memberName,
-        relation :memberRelation,
+        relation: memberRelation,
         age: parseInt(memberAge),
-        maritalStatus:memberMaritalStatus,
-        bloodGroup:memberBloodGroup,
-        qualification:memberQualification,
+        maritalStatus: memberMaritalStatus,
+        bloodGroup: memberBloodGroup,
+        qualification: memberQualification,
         occupation: memberOccupation
       });
     }
@@ -154,9 +152,8 @@ app.post('/login', async (req, res) => {
     const user = await Family.findOne({ email, status: 'approved' });
     if (!user) return res.render('login', { error: 'User not found or not approved' });
 
-    const dobInput = new Date(dob).toISOString().split('T')[0];
-    const dobStored = new Date(user.dob).toISOString().split('T')[0];
-    const formatted = new Date(family.dob).toLocaleDateString('en-CA'); // 👉 "2025-01-01"
+    const dobInput = new Date(dob).toISOString().split('');
+    const dobStored = new Date(user.dob).toISOString().split('');
 
     if (dobInput !== dobStored) {
       return res.render('login', { error: 'Incorrect Date of Birth' });
@@ -181,11 +178,10 @@ app.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/login'));
 });
 
-// Render login form
+// Admin login form
 app.get('/admin-login', (req, res) => {
-  res.render('admin-login'); // This will render views/admin-login.ejs
+  res.render('admin-login'); // views/admin-login.ejs
 });
-
 
 // Start server
 const PORT = process.env.PORT || 5000;
