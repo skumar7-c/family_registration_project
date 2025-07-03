@@ -1,3 +1,4 @@
+// ✅ server.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -61,28 +62,22 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
       familyHead, gender, dob, phone, email, city, locality,
       occupation, gotra, nativePlace, bloodGroup,
       address, memberName, memberRelation, memberAge,
-      memberMaritalStatus, memberQualification, memberBloodGroup, memberOccupation,
+      memberMaritalStatus, memberQualification, memberBloodGroup, memberOccupation
     } = req.body;
 
-    // ✅ Enforce city restriction to Jaipur or Chittorgarh
     if (!['jaipur', 'chittorgarh'].includes(city?.toLowerCase())) {
       return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
     }
 
-    console.log("🟢 Received Form Data:", req.body);
-
-    // ✅ Validate required fields
     if (!dob || !email || !familyHead) {
       return res.status(400).send("Missing required fields: dob, email, or familyHead.");
     }
 
-    // ✅ Parse and validate DOB
     const dobDate = new Date(dob);
     if (isNaN(dobDate.getTime())) {
       return res.status(400).send("Invalid Date format");
     }
 
-    // ✅ Handle members from form
     const members = [];
     if (Array.isArray(memberName)) {
       memberName.forEach((_, i) => {
@@ -127,10 +122,10 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
     });
 
     await newFamily.save();
-    res.send('✅ Registered! Please wait for admin approval.');
+    res.json({ message: '✅ Registered! Please wait for admin approval.' });
   } catch (error) {
     console.error("❌ Registration Error:", error);
-    res.status(500).send('Error: ' + error.message);
+    res.status(500).json({ message: 'Error: ' + error.message });
   }
 });
 
@@ -140,7 +135,7 @@ app.get('/login', (req, res) => {
   res.render('login', { error: null });
 });
 
-// Login with Email + DOB
+// Login logic
 app.post('/login', async (req, res) => {
   const { email, dob } = req.body;
 
@@ -152,8 +147,8 @@ app.post('/login', async (req, res) => {
     const user = await Family.findOne({ email, status: 'approved' });
     if (!user) return res.render('login', { error: 'User not found or not approved' });
 
-    const dobInput = new Date(dob).toISOString().split('');
-    const dobStored = new Date(user.dob).toISOString().split('');
+    const dobInput = new Date(dob).toISOString().split('T')[0];
+    const dobStored = new Date(user.dob).toISOString().split('T')[0];
 
     if (dobInput !== dobStored) {
       return res.render('login', { error: 'Incorrect Date of Birth' });
@@ -180,7 +175,7 @@ app.get('/logout', (req, res) => {
 
 // Admin login form
 app.get('/admin-login', (req, res) => {
-  res.render('admin-login'); // views/admin-login.ejs
+  res.render('admin-login');
 });
 
 // Start server
