@@ -182,7 +182,7 @@ button[type="submit"]:hover {
     <marquee behavior="scroll" direction="left">Welcome to Family Registration Portal</marquee>
   </header>
 
-  <form    action="/submit-form" method="POST" enctype="multipart/form-data"  onsubmit="return handleFormSubmit(event);"  novalidate>
+  <form  action="/submit-form" method="POST" enctype="multipart/form-data"  onsubmit="return handleFormSubmit(event);"  novalidate>
     <div class="form-section">
       <h3 style="color: #b73c0b;">Personal Information</h3>
 
@@ -216,7 +216,7 @@ button[type="submit"]:hover {
       <span id="error-email" class="error-message"></span>
 
       <label>Occupation:</label>
-      <input type="text" id="occupation" name="occupation[]" placeholder="Enter your occupation...">
+      <input type="text" id="occupation" name="occupation" placeholder="Enter your occupation...">
       <span id="error-occupation" class="error-message"></span>
 
       <label>Gotra:</label>
@@ -224,7 +224,7 @@ button[type="submit"]:hover {
       <span id="error-gotra" class="error-message"></span>
 
        <label for="bloodGroup">Blood Group:</label>
-     <select id="bloodGroup" name="bloodGroup[]" required>
+     <select id="bloodGroup" name="bloodGroup" required>
       <option value="">Select</option>
       <option value="A+">A+</option><option value="A-">A-</option>
       <option value="B+">B+</option><option value="B-">B-</option>
@@ -571,7 +571,7 @@ if (!validateForm()) {
 
   formData.append('members', JSON.stringify(members));
 
-  fetch('http://localhost:5000/submit', {
+  fetch('http://localhost:5000/submit-form', {
     method: 'POST',
     body: formData
   })
