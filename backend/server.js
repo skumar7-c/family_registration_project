@@ -68,10 +68,9 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
     const members = JSON.parse(req.body.members || '[]');
 
     // ✅ Enforce city restriction to Jaipur or Chittorgarh
-    if (!['jaipur', 'Chittorgarh'].includes(city)) {
-      return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
-    }
-    
+    if (!['jaipur', 'chittorgarh'].includes(city?.toLowerCase())) {
+  return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
+}
     console.log("🟢 Received Form Data:", req.body);
 
     // ✅ Validate required fields
@@ -157,6 +156,7 @@ app.post('/login', async (req, res) => {
 
     const dobInput = new Date(dob).toISOString().split('T')[0];
     const dobStored = new Date(user.dob).toISOString().split('T')[0];
+    const formatted = new Date(family.dob).toLocaleDateString('en-CA'); // 👉 "2025-01-01"
 
     if (dobInput !== dobStored) {
       return res.render('login', { error: 'Incorrect Date of Birth' });
