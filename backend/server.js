@@ -17,7 +17,7 @@ app.use(express.json());
 
 // ✅ CORS config
 app.use(cors({
-  origin: 'http://localhost:3000', // Change if needed
+  origin: 'http://localhost:5000', // Change if needed
   credentials: true
 }));
 
@@ -44,7 +44,7 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + unique);
   }
 });
-const upload = multer({ storage });
+const upload = multer({ dest:'uploads/' });
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
