@@ -574,7 +574,7 @@ if (!validateForm()) {
   fetch('http://localhost:5000/submit-form', {
     method: 'POST',
     body: formData
-  })
+  });
   .then(response => response.json())
   .then(data => {
     alert(data.message || 'Submitted!');
