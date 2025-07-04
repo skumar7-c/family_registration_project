@@ -5,8 +5,8 @@ const multer = require('multer');
 const path = require('path');
 const Family = require('./models/family');
 const cors = require('cors');
-const adminRoutes = require('./routes/admin');
 const session = require('express-session');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 
@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(cors({
-  origin: 'http://localhost:5000', // Adjust to your frontend port if needed
+  origin: 'http://localhost:5000', // change to 3000 if your HTML runs there
   credentials: true
 }));
 
@@ -25,18 +25,21 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Static files and view engine
+// Static files
 app.use(express.static('public'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// Admin routes
+// Routes
 app.use('/admin', adminRoutes);
 
-// ✅ Multer setup using diskStorage and .fields()
+// ✅ Multer setup for profile image only
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, path.join(__dirname, 'uploads/')),
+  destination: (req, file, cb) => {
+    cb(null, path.join(__dirname, 'uploads/'));
+  },
   filename: (req, file, cb) => {
     const unique = Date.now() + path.extname(file.originalname);
     cb(null, file.fieldname + '-' + unique);
@@ -44,19 +47,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// Use .fields() to allow file + multiple arrays
 const cpUpload = upload.fields([
-  { name: 'profileImage', maxCount: 1 },
-  { name: 'memberName[]' },
-  { name: 'memberRelation[]' },
-  { name: 'memberAge[]' },
-  { name: 'memberMaritalStatus[]' },
-  { name: 'memberBloodGroup[]' },
-  { name: 'memberQualification[]' },
-  { name: 'memberOccupation[]' }
+  { name: 'profileImage', maxCount: 1 } // ✅ Only image field
 ]);
 
-// Connect to MongoDB
+// ✅ MongoDB connection
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -64,13 +59,12 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log("✅ MongoDB connected"))
 .catch(err => console.error("❌ MongoDB error:", err));
 
-// Home page
+// ✅ Serve index.html (frontend form)
 app.get('/', (req, res) => {
-  if (req.session.user) return res.redirect('/dashboard');
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  res.sendFile(path.join(__dirname, '../frontend/index.html')); // make sure path is correct
 });
 
-// ✅ Form submission route
+// ✅ Handle form submission
 app.post('/submit-form', cpUpload, async (req, res) => {
   try {
     console.log("🛬 Received form submission");
@@ -89,17 +83,8 @@ app.post('/submit-form', cpUpload, async (req, res) => {
       ['memberOccupation[]']: memberOccupation
     } = req.body;
 
-    if (!['jaipur', 'chittorgarh'].includes(city?.toLowerCase())) {
-      return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
-    }
-
     if (!dob || !email || !familyHead) {
-      return res.status(400).json({ message: "Missing required fields: dob, email, or familyHead." });
-    }
-
-    const dobDate = new Date(dob);
-    if (isNaN(dobDate.getTime())) {
-      return res.status(400).json({ message: "Invalid Date format" });
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
     const members = [];
@@ -132,7 +117,7 @@ app.post('/submit-form', cpUpload, async (req, res) => {
       profileImage: req.files?.profileImage?.[0]?.path || '',
       familyHead,
       gender,
-      dob: dobDate,
+      dob: new Date(dob),
       phone,
       email,
       locality,
@@ -147,61 +132,64 @@ app.post('/submit-form', cpUpload, async (req, res) => {
     });
 
     await newFamily.save();
-    return res.status(200).json({ message: '✅ Registered! Please wait for admin approval.' });
+    res.status(200).json({ message: '✅ Registered! Please wait for admin approval.' });
   } catch (error) {
-    console.error("❌ Registration Error:", error);
-    return res.status(500).json({ message: 'Error: ' + error.message });
+    console.error("❌ Error:", error);
+    res.status(500).json({ message: 'Server error: ' + error.message });
   }
 });
 
-// Login page
+// ✅ Login (user)
 app.get('/login', (req, res) => {
   if (req.session.user) return res.redirect('/dashboard');
   res.render('login', { error: null });
 });
 
-// Login route
 app.post('/login', async (req, res) => {
   const { email, dob } = req.body;
   if (!email || !dob) {
-    return res.render('login', { error: 'Email and DOB are required' });
+    return res.render('login', { error: 'Email and DOB required' });
   }
 
   try {
     const user = await Family.findOne({ email, status: 'approved' });
-    if (!user) return res.render('login', { error: 'User not found or not approved' });
+    if (!user) return res.render('login', { error: 'User not approved or not found' });
 
-    const dobInput = new Date(dob).toISOString().split('T')[0];
-    const dobStored = new Date(user.dob).toISOString().split('T')[0];
+    const inputDOB = new Date(dob).toISOString().split('T')[0];
+    const storedDOB = new Date(user.dob).toISOString().split('T')[0];
 
-    if (dobInput !== dobStored) {
-      return res.render('login', { error: 'Incorrect Date of Birth' });
+    if (inputDOB !== storedDOB) {
+      return res.render('login', { error: 'Incorrect DOB' });
     }
 
-    req.session.user = { id: user._id, email: user.email, name: user.familyHead };
+    req.session.user = {
+      id: user._id,
+      email: user.email,
+      name: user.familyHead
+    };
     res.redirect('/dashboard');
   } catch (err) {
-    console.error('❌ Login Error:', err);
-    res.render('login', { error: 'Login failed. Please try again.' });
+    console.error(err);
+    res.render('login', { error: 'Login failed' });
   }
 });
 
-// Dashboard
+// ✅ Dashboard
 app.get('/dashboard', (req, res) => {
   if (!req.session.user) return res.redirect('/login');
   res.render('dashboard', { user: req.session.user });
 });
 
-// Logout
+// ✅ Logout
 app.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/login'));
 });
 
-// Admin login form
+// ✅ Admin Login View
 app.get('/admin-login', (req, res) => {
   res.render('admin-login');
 });
 
-// Start server
+// ✅ Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
