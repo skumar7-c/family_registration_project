@@ -64,6 +64,9 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
       address, memberName, memberRelation, memberAge,
       memberMaritalStatus, memberQualification, memberBloodGroup, memberOccupation
     } = req.body;
+    if (!city || !['jaipur', 'chittorgarh'].includes(city.toLowerCase())) {
+  return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
+    }
 
 
     if (!dob || !email || !familyHead) {
@@ -174,10 +177,6 @@ app.get('/logout', (req, res) => {
 app.get('/admin-login', (req, res) => {
   res.render('admin-login');
 });
-if (!city || !['jaipur', 'chittorgarh'].includes(city.toLowerCase())) {
-  return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
-}
-
 
 // Start server
 const PORT = process.env.PORT || 5000;
