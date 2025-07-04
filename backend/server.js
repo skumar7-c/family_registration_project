@@ -75,7 +75,7 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
 
     const dobDate = new Date(dob);
     if (isNaN(dobDate.getTime())) {
-      return res.status(400).send("Invalid Date format");
+      res.status(400).json({ message: "Invalid Date format" });
     }
 
     const members = [];
