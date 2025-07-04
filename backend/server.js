@@ -74,7 +74,7 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
       memberMaritalStatus, memberQualification, memberBloodGroup, memberOccupation
     } = req.body;
 
-    if (!city || !['jaipur', 'chittorgarh'].includes(city.toLowerCase())) {
+    if (!['jaipur', 'chittorgarh'].includes(city?.toLowerCase())) {
       return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
     }
 
