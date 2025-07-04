@@ -1,4 +1,4 @@
-// ✅ server.js
+// ✅ Updated server.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -14,7 +14,12 @@ const app = express();
 // Middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cors());
+
+// ✅ CORS config
+app.use(cors({
+  origin: 'http://localhost:3000', // Change if needed
+  credentials: true
+}));
 
 app.use(session({
   secret: 'mysecretkey',
@@ -58,24 +63,28 @@ app.get('/', (req, res) => {
 // Registration route
 app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
   try {
+    console.log("🛬 Received form submission");
+    console.log("Request body:", req.body);
+    console.log("Uploaded file:", req.file);
+
     const {
       familyHead, gender, dob, phone, email, city, locality,
       occupation, gotra, nativePlace, bloodGroup,
       address, memberName, memberRelation, memberAge,
       memberMaritalStatus, memberQualification, memberBloodGroup, memberOccupation
     } = req.body;
+
     if (!city || !['jaipur', 'chittorgarh'].includes(city.toLowerCase())) {
-  return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
+      return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
     }
 
-
     if (!dob || !email || !familyHead) {
-      return res.status(400).send("Missing required fields: dob, email, or familyHead.");
+      return res.status(400).json({ message: "Missing required fields: dob, email, or familyHead." });
     }
 
     const dobDate = new Date(dob);
     if (isNaN(dobDate.getTime())) {
-      res.status(400).json({ message: "Invalid Date format" });
+      return res.status(400).json({ message: "Invalid Date format" });
     }
 
     const members = [];
@@ -122,10 +131,10 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
     });
 
     await newFamily.save();
-    res.json({ message: '✅ Registered! Please wait for admin approval.' });
+    return res.status(200).json({ message: '✅ Registered! Please wait for admin approval.' });
   } catch (error) {
     console.error("❌ Registration Error:", error);
-    res.status(500).json({ message: 'Error: ' + error.message });
+    return res.status(500).json({ message: 'Error: ' + error.message });
   }
 });
 
@@ -138,7 +147,6 @@ app.get('/login', (req, res) => {
 // Login logic
 app.post('/login', async (req, res) => {
   const { email, dob } = req.body;
-
   if (!email || !dob) {
     return res.render('login', { error: 'Email and DOB are required' });
   }
