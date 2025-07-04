@@ -65,12 +65,9 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
       memberMaritalStatus, memberQualification, memberBloodGroup, memberOccupation
     } = req.body;
 
-    const cityInput = document.getElementById('city').value.toLowerCase();
-    if (!['jaipur', 'chittorgarh'].includes(cityInput)) {
-    alert('City must be Jaipur or Chittorgarh');
-     return;
+if (!['jaipur', 'chittorgarh'].includes(city?.toLowerCase())) {
+  return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
 }
-
     if (!dob || !email || !familyHead) {
       return res.status(400).send("Missing required fields: dob, email, or familyHead.");
     }
