@@ -234,7 +234,7 @@ button[type="submit"]:hover {
     <span id="error-bloodGroup" class="error-message"></span>
 
     <label for="city">City:</label>
-    <select id="city" name="city" onchange="updateLocalities()">
+    <select id="city" name="city" onchange="updateLocalities()" required>
        <option value="">Select City</option>
       <option value="jaipur">Jaipur</option>
       <option value="chittorgarh">Chittorgarh</option>
@@ -242,7 +242,7 @@ button[type="submit"]:hover {
     <span id="error-city" class="error-message"></span>
 
     <label for="locality">Locality:</label>
-    <select id="locality" name="locality">
+    <select id="locality" name="locality" required>
     <option value="">Select Locality</option>
     </select>
     <span id="error-locality" class="error-message"></span>
