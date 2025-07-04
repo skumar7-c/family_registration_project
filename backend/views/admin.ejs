@@ -172,15 +172,16 @@
           <p><strong>Name:</strong> ${family.familyHead}</p>
           <p><strong>Email:</strong> ${family.email}</p>
           <p><strong>DOB:</strong> ${family.dob}</p>
-          <p><strong>City:</strong> ${family.locality || 'N/A'}</p>
+          <p><strong>City:</strong> ${family.city || 'N/A'}</p>
           <p><strong>Status:</strong> ${family.status || 'Pending'}</p>
           <button class="view-btn" onclick="toggleDetails(${index})">👁️ View</button>
 
-          <div class="details" id="details-${index}">
+            <div class="details" id="details-${index}">
             <p><strong>Phone number:</strong> ${family.phone}</p>
             <p><strong>Gender:</strong> ${family.gender}</p>
             <p><strong>Occupation:</strong> ${family.occupation}</p>
             <p><strong>Goatra:</strong> ${family.goatra}</p>
+            <p><strong>locality:</strong> ${family.locality}</p>
             <p><strong>Native Place:</strong> ${family.nativeePlace}</p>
             <p><strong>Blood Group:</strong> ${family.bloodGroup}</p>
             <p><strong>Address:</strong> ${family.addrss}</p>
