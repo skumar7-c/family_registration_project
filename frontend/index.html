@@ -355,7 +355,53 @@ button[type="submit"]:hover {
 
 
 // ✅ Dynamic Family Member Validation
-  for (let i = 1; i <= memberCount; i++) {
+
+
+
+for (let i = 1; i <= memberCount; i++) {
+  const nameEl = document.getElementById(`member-name${i}`);
+  const relationEl = document.getElementById(`member-relation${i}`);
+  const ageEl = document.getElementById(`member-age${i}`);
+  const qualificationEl = document.getElementById(`member-qualification${i}`);
+  const bloodEl = document.getElementById(`member-bloodGroup${i}`);
+  const maritalEl = document.getElementById(`member-marital-status${i}`);
+
+  // If any of these inputs are missing, skip to the next member
+  if (!nameEl || !relationEl || !ageEl || !qualificationEl || !bloodEl || !maritalEl) continue;
+
+  const name = nameEl.value.trim();
+  const relation = relationEl.value;
+  const age = ageEl.value.trim();
+  const qualification = qualificationEl.value;
+  const blood = bloodEl.value;
+  const marital = maritalEl.value;
+
+  if (!name) showError(`error-member-name${i}`, "Please enter your family member name.", `member-name${i}`);
+  else clearError(`error-member-name${i}`);
+
+  if (!relation) showError(`error-member-relation${i}`, "Please enter your relation with family head.", `member-relation${i}`);
+  else clearError(`error-member-relation${i}`);
+
+  if (!age || isNaN(age) || age <= 1 || age >= 125) showError(`error-member-age${i}`, "Please enter valid age", `member-age${i}`);
+  else clearError(`error-member-age${i}`);
+
+  if (!qualification) showError(`error-member-qualification${i}`, "Please select your qualification", `member-qualification${i}`);
+  else clearError(`error-member-qualification${i}`);
+
+  if (!marital) showError(`error-member-marital-status${i}`, "Please select your marital status", `member-marital-status${i}`);
+  else clearError(`error-member-marital-status${i}`);
+
+  if (!blood) showError(`error-member-bloodGroup${i}`, "Please select your blood group", `member-bloodGroup${i}`);
+  else clearError(`error-member-bloodGroup${i}`);
+}
+
+
+
+
+
+
+    
+  /*for (let i = 1; i <= memberCount; i++) {
     const name = document.getElementById(`member-name${i}`).value.trim();
     const relation = document.getElementById(`member-relation${i}`).value;
     const age = document.getElementById(`member-age${i}`).value.trim();
@@ -399,7 +445,7 @@ button[type="submit"]:hover {
     } else {
       clearError(`error-member-bloodGroup${i}`);
     }
-  }
+  }*/
 
      return isValid;
     }
