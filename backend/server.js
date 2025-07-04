@@ -1,4 +1,3 @@
-// ✅ Updated server.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -15,9 +14,8 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// ✅ CORS config
 app.use(cors({
-  origin: 'http://localhost:5000', // Change if needed
+  origin: 'http://localhost:5000', // Adjust to your frontend port if needed
   credentials: true
 }));
 
@@ -27,7 +25,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Static & view engine
+// Static files and view engine
 app.use(express.static('public'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.set('view engine', 'ejs');
@@ -36,7 +34,7 @@ app.set('views', path.join(__dirname, 'views'));
 // Admin routes
 app.use('/admin', adminRoutes);
 
-// Multer setup
+// ✅ Multer setup using diskStorage and .fields()
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, path.join(__dirname, 'uploads/')),
   filename: (req, file, cb) => {
@@ -44,9 +42,21 @@ const storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + unique);
   }
 });
-const upload = multer({ dest:'uploads/' });
+const upload = multer({ storage });
 
-// MongoDB connection
+// Use .fields() to allow file + multiple arrays
+const cpUpload = upload.fields([
+  { name: 'profileImage', maxCount: 1 },
+  { name: 'memberName[]' },
+  { name: 'memberRelation[]' },
+  { name: 'memberAge[]' },
+  { name: 'memberMaritalStatus[]' },
+  { name: 'memberBloodGroup[]' },
+  { name: 'memberQualification[]' },
+  { name: 'memberOccupation[]' }
+]);
+
+// Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -54,24 +64,29 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log("✅ MongoDB connected"))
 .catch(err => console.error("❌ MongoDB error:", err));
 
-// Home route
+// Home page
 app.get('/', (req, res) => {
   if (req.session.user) return res.redirect('/dashboard');
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
-// Registration route
-app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
+// ✅ Form submission route
+app.post('/submit-form', cpUpload, async (req, res) => {
   try {
     console.log("🛬 Received form submission");
-    console.log("Request body:", req.body);
-    console.log("Uploaded file:", req.file);
+    console.log("Body:", req.body);
+    console.log("Files:", req.files);
 
     const {
       familyHead, gender, dob, phone, email, city, locality,
-      occupation, gotra, nativePlace, bloodGroup,
-      address, memberName, memberRelation, memberAge,
-      memberMaritalStatus, memberQualification, memberBloodGroup, memberOccupation
+      occupation, gotra, nativePlace, bloodGroup, address,
+      ['memberName[]']: memberName,
+      ['memberRelation[]']: memberRelation,
+      ['memberAge[]']: memberAge,
+      ['memberMaritalStatus[]']: memberMaritalStatus,
+      ['memberQualification[]']: memberQualification,
+      ['memberBloodGroup[]']: memberBloodGroup,
+      ['memberOccupation[]']: memberOccupation
     } = req.body;
 
     if (!['jaipur', 'chittorgarh'].includes(city?.toLowerCase())) {
@@ -88,6 +103,7 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
     }
 
     const members = [];
+
     if (Array.isArray(memberName)) {
       memberName.forEach((_, i) => {
         members.push({
@@ -113,7 +129,7 @@ app.post('/submit-form', upload.single('profileImage'), async (req, res) => {
     }
 
     const newFamily = new Family({
-      profileImage: req.file?.path || '',
+      profileImage: req.files?.profileImage?.[0]?.path || '',
       familyHead,
       gender,
       dob: dobDate,
@@ -144,7 +160,7 @@ app.get('/login', (req, res) => {
   res.render('login', { error: null });
 });
 
-// Login logic
+// Login route
 app.post('/login', async (req, res) => {
   const { email, dob } = req.body;
   if (!email || !dob) {
