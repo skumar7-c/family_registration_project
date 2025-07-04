@@ -571,14 +571,21 @@ if (!validateForm()) {
 
 console.log('Selected city:', formData.get('city'));
 
+
 fetch('http://localhost:5000/submit-form', {
   method: 'POST',
   body: formData
 })
-.then(response => response.json())
-.then(data => {
-  alert(data.message || 'Submitted!');
-  form.reset();
+.then(async response => {
+  const contentType = response.headers.get("content-type");
+  if (contentType && contentType.includes("application/json")) {
+    const data = await response.json();
+    alert(data.message || 'Submitted!');
+  } else {
+    const text = await response.text();  // fallback for HTML errors
+    console.error("Non-JSON response:", text);
+    alert('Something went wrong.');
+  }
 })
 .catch(error => {
   console.error('Error:', error);
