@@ -174,7 +174,7 @@ app.get('/logout', (req, res) => {
 app.get('/admin-login', (req, res) => {
   res.render('admin-login');
 });
-if (!['jaipur', 'chittorgarh'].includes(city?.toLowerCase())) {
+if (!city || !['jaipur', 'chittorgarh'].includes(city.toLowerCase())) {
   return res.status(400).json({ message: 'City must be Jaipur or Chittorgarh' });
 }
 
