@@ -35,7 +35,7 @@ app.set('views', path.join(__dirname, 'views'));
 // Routes
 app.use('/admin', adminRoutes);
 
-// ✅ Multer setup for profile image only
+// ✅ Multer setup for profile image and dynamic member fields
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, 'uploads/'));
@@ -47,8 +47,16 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// UPDATED Multer fields configuration to include dynamic member arrays
 const cpUpload = upload.fields([
-  { name: 'profileImage', maxCount: 1 } // ✅ Only image field
+  { name: 'profileImage', maxCount: 1 }, // Main profile image
+  { name: 'memberName[]', maxCount: 100 }, // Max 100 members, adjust as needed
+  { name: 'memberRelation[]', maxCount: 100 },
+  { name: 'memberAge[]', maxCount: 100 },
+  { name: 'memberMaritalStatus[]', maxCount: 100 },
+  { name: 'memberQualification[]', maxCount: 100 },
+  { name: 'memberBloodGroup[]', maxCount: 100 },
+  { name: 'memberOccupation[]', maxCount: 100 }
 ]);
 
 // ✅ MongoDB connection
@@ -68,19 +76,20 @@ app.get('/', (req, res) => {
 app.post('/submit-form', cpUpload, async (req, res) => {
   try {
     console.log("🛬 Received form submission");
-    console.log("Body:", req.body);
-    console.log("Files:", req.files);
+    console.log("Body:", req.body); // Now req.body should contain all text fields, including arrays from members
+    console.log("Files:", req.files); // Now req.files should contain profileImage
 
     const {
       familyHead, gender, dob, phone, email, city, locality,
       occupation, gotra, nativePlace, bloodGroup, address,
-      ['memberName[]']: memberName,
-      ['memberRelation[]']: memberRelation,
-      ['memberAge[]']: memberAge,
-      ['memberMaritalStatus[]']: memberMaritalStatus,
-      ['memberQualification[]']: memberQualification,
-      ['memberBloodGroup[]']: memberBloodGroup,
-      ['memberOccupation[]']: memberOccupation
+      // Multer processes these array fields into simple arrays on req.body
+      'memberName[]': memberName,
+      'memberRelation[]': memberRelation,
+      'memberAge[]': memberAge,
+      'memberMaritalStatus[]': memberMaritalStatus,
+      'memberQualification[]': memberQualification,
+      'memberBloodGroup[]': memberBloodGroup,
+      'memberOccupation[]': memberOccupation
     } = req.body;
 
     if (!dob || !email || !familyHead) {
@@ -89,10 +98,11 @@ app.post('/submit-form', cpUpload, async (req, res) => {
 
     const members = [];
 
+    // Correctly handle member data from arrays in req.body
     if (Array.isArray(memberName)) {
-      memberName.forEach((_, i) => {
+      memberName.forEach((name, i) => {
         members.push({
-          name: memberName[i],
+          name: name,
           relation: memberRelation[i],
           age: parseInt(memberAge[i]),
           maritalStatus: memberMaritalStatus[i],
@@ -101,17 +111,18 @@ app.post('/submit-form', cpUpload, async (req, res) => {
           occupation: memberOccupation[i]
         });
       });
-    } else if (memberName) {
-      members.push({
-        name: memberName,
-        relation: memberRelation,
-        age: parseInt(memberAge),
-        maritalStatus: memberMaritalStatus,
-        bloodGroup: memberBloodGroup,
-        qualification: memberQualification,
-        occupation: memberOccupation
-      });
+    } else if (memberName) { // Handle case with a single member (not an array)
+        members.push({
+            name: memberName,
+            relation: memberRelation,
+            age: parseInt(memberAge),
+            maritalStatus: memberMaritalStatus,
+            bloodGroup: memberBloodGroup,
+            qualification: memberQualification,
+            occupation: memberOccupation
+        });
     }
+
 
     const newFamily = new Family({
       profileImage: req.files?.profileImage?.[0]?.path || '',
