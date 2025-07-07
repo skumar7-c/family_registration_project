@@ -183,7 +183,7 @@ button[type="submit"]:hover {
     <marquee behavior="scroll" direction="left">Welcome to Family Registration Portal</marquee>
   </header>
 
-  <form  action="/submit-form" method="POST" enctype="multipart/form-data"  onsubmit="return handleFormSubmit(event);"  novalidate>
+  <form  action="/submit-form" method="POST" enctype="multipart/form-data" onsubmit="return handleFormSubmit(event);"  novalidate>
     <div class="form-section">
       <h3 style="color: #b73c0b;">Personal Information</h3>
 
@@ -611,9 +611,6 @@ if (!validateForm()) {
     
     members.push({ name, relation, age, maritalStatus, bloodGroup, qualification, occupation });
   });
-
-console.log('Selected city:', formData.get('city'));
-
 
 fetch('http://localhost:5000/submit-form', {
   method: 'POST',
