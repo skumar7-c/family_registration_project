@@ -612,7 +612,7 @@ if (!validateForm()) {
     members.push({ name, relation, age, maritalStatus, bloodGroup, qualification, occupation });
   });
 
-fetch('http://localhost:5000/submit-form', {
+fetch(`http://localhost:5000/submit-form`, {
   method: 'POST',
   body: formData
 })
@@ -622,8 +622,6 @@ fetch('http://localhost:5000/submit-form', {
     const data = await response.json();
     alert(data.message || 'Submitted!');
   } else {
-    const text = await response.text();  // fallback for HTML errors
-    console.error("Non-JSON response:", text);
     alert('Something went wrong.');
   }
 })
