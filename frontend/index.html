@@ -620,13 +620,11 @@ fetch(`http://localhost:5000/submit-form`, {
   const contentType = response.headers.get("content-type");
   if (contentType && contentType.includes("application/json")) {
     const data = await response.json();
+    alert(data.message); // ✅ Show success
+    document.querySelector('form').reset(); // Optional: clear form
   } else {
     alert('Something went wrong.');
   }
-})
-.catch(error => {
-  console.error('Error:', error);
-  alert('Error submitting form.');
 });
   return true; // Optional
     }
