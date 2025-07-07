@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 app.use(cors({
-  origin: 'http://localhost:5000', // change to 3000 if your HTML runs there
+  origin: `http://localhost:5000`, // change to 3000 if your HTML runs there
   credentials: true
 }));
 
