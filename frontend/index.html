@@ -620,7 +620,6 @@ fetch(`http://localhost:5000/submit-form`, {
   const contentType = response.headers.get("content-type");
   if (contentType && contentType.includes("application/json")) {
     const data = await response.json();
-    alert(data.message || 'Submitted!');
   } else {
     alert('Something went wrong.');
   }
