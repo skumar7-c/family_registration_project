@@ -189,7 +189,7 @@ button[type="submit"]:hover {
 
       <div class="profile-pic-container">
         <input type="file" id="profile"  name="profileImage"  accept="image/*" onchange="loadProfileImage(this)" required>
-        <label for="profile" class="profile-label" id="profieImage"></label>
+        <label for="profile" class="profile-label" id="preview"></label>
       </div>
       <span id="error-profile" class="error-message"></span>
 
@@ -569,11 +569,12 @@ function removeMember(id) {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
       reader.onload = function (e) {
-        const preview = document.getElementById('profileImage');
+        const preview = document.getElementById('preview');
         preview.style.backgroundImage = `url('${e.target.result}')`;
         preview.style.backgroundSize = "cover";
         preview.style.backgroundPosition = "center";
         preview.style.border = "none";
+        preview.style.display="block";
       };
       reader.readAsDataURL(input.files[0]);
     }}
