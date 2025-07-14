@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Export Families</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f4;
+      border: 4px solid black;
+
+    }
+
+    h1 {
+      text-align: center;
+      color: #950a52;
+      margin-bottom: 20px;
+      text-decoration: underline;
+    }
+
+    .family-box {
+      border: 1px solid #cdbaba;
+      background: #fff;
+      margin: 30px;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .combined-pdf-button {
+      background-color: green;
+      color: #fff;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 6px 12px;
+      border: none;
+    }
+
+    .pdf-button {
+      background-color: #6a1b9a;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .pdf-button:hover {
+      background-color: #4a148c;
+    }
+
+    .pdf-content {
+      display: none;
+      font-size: 16px;
+      color: #000;
+      padding: 0;
+    }
+
+    .pdf-wrapper {
+      padding: 10px;
+      background-color: white;
+      margin-bottom: 30px;
+    }
+
+    .pdf-inner {
+      padding: 20px;
+      position: relative;
+      border: #000 solid 2px;
+    }
+
+    .pdf-content h2 {
+      text-align: center;
+      text-decoration: underline;
+      font-size: 20px;
+    }
+
+    .info-section {
+      display: flex;
+      justify-content: space-between;
+      gap: 50px;
+      margin-bottom: 20px;
+    }
+
+    .info-left {
+      flex: 1;
+    }
+
+    .info-left p {
+      margin: 5px 0;
+    }
+
+    .info-right {
+      width: 200px;
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    .info-right img {
+      width: 140px;
+      height: 140px;
+      max-height: 140px;
+      object-fit: contain;
+      margin-bottom: 8px;
+      border: 2px solid #827e7e;
+    }
+
+    .info-right p {
+      font-size: 16px;
+      margin: 2px 0;
+      text-align: left;
+      width: 100%;
+      gap: 40px;
+    }
+
+    h4 {
+      margin-top: 30px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      text-decoration: underline;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    table, th, td {
+      border: 1px solid #333;
+    }
+
+    th, td {
+      padding: 5px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #eaeaea;
+    }
+
+    .page-break {
+      page-break-before: always;
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+  <h1>Family Registrations Details</h1>
+  <div style="text-align: right; margin: 20px; color: green;">
+    <button class="combined-pdf-button" onclick="downloadAllPDF()">Download Combined PDF</button>
+  </div>
+
+  <div id="families"></div>
+
+  <script>
+    let allData = [];
+
+    async function fetchFamilies() {
+      const res = await fetch('/admin/families');
+      const data = await res.json();
+      allData = data;
+      renderExportList(allData);
+    }
+
+    function formatDate(dateStr) {
+      const date = new Date(dateStr);
+      return isNaN(date.getTime()) ? '' : date.toLocaleDateString('en-IN');
+    }
+
+    function renderExportList(data) {
+      const container = document.getElementById("families");
+      container.innerHTML = "";
+
+      data.forEach((family, i) => {
+        const div = document.createElement("div");
+        div.className = "family-box";
+        const hasMembers = family.members && family.members.length > 0;
+
+        div.innerHTML = `
+          <span><strong>Family Registration - ${i + 1}</strong></span>
+          <button class="pdf-button" onclick="downloadFamilyPDF(${i})">Download PDF</button>
+
+          <div class="pdf-content" id="pdf-template-${i}">
+            ${i !== 0 ? '<div class="page-break" data-page-break="true"></div>' : ''}
+            <div class="pdf-wrapper">                
+              <div class="pdf-inner">              
+                <h2>Family Registration</h2>
+                <div class="info-section">
+                  <div class="info-left">
+                    <p><strong>Name:</strong> ${family.familyHead || ""}</p>
+                    <p><strong>Gender:</strong> ${family.gender || ""}</p>
+                    <p><strong>DOB:</strong> ${formatDate(family.dob)}</p>
+                    <p><strong>Phone:</strong> ${family.phone || ""}</p>
+                    <p><strong>Email ID:</strong> ${family.email || ""}</p>
+                    <p><strong>City:</strong> ${family.city || ""}</p>
+                    <p><strong>Locality:</strong> ${family.locality || ""}</p>
+                    <p><strong>Native Place:</strong> ${family.nativePlace || ""}</p>
+                    <p><strong>Full Address:</strong> ${family.address || ""}</p>
+                  </div>
+                  <div class="info-right">
+                    <div>
+                      ${family.profileImageBase64 ? 
+                        `<img src="${family.profileImageBase64}" alt="Photo" onerror="this.style.display='none'; this.parentNode.innerText='No Photo';">` 
+                        : `Photo`}
+                    </div>
+                    <div style="margin-top: 10px; font-size: 13px; text-align: left;">
+                      <p><strong>Occupation:</strong> ${family.occupation || ""}</p>
+                      <p><strong>Gotra:</strong> ${family.gotra || ""}</p>
+                      <p><strong>Blood Group:</strong> ${family.bloodGroup || ""}</p>
+                    </div>
+                  </div>
+                </div>
+                ${hasMembers ? `
+                  <h4>Family Members</h4>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>S.N</th>
+                        <th>Name</th>
+                        <th>Relation</th>
+                        <th>Age</th>
+                        <th>Marital Status</th>
+                        <th>Blood Group</th>
+                        <th>Education</th>
+                        <th>Occupation</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      ${family.members.map((m, j) => `
+                        <tr>
+                          <td>${j + 1}</td>
+                          <td>${m.memberName || ""}</td>
+                          <td>${m.memberRelation || ""}</td>
+                          <td>${m.memberAge || ""}</td>
+                          <td>${m.memberMaritalStatus || ""}</td>
+                          <td>${m.memberBloodGroup || ""}</td>
+                          <td>${m.memberQualification || ""}</td>
+                          <td>${m.memberOccupation || ""}</td>
+                        </tr>`).join("")}
+                    </tbody>
+                  </table>` : ""}
+              </div>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+   async function downloadFamilyPDF(index) {
+  const element = document.getElementById(`pdf-template-${index}`);
+  element.style.display = "block";
+element.querySelectorAll('[data-page-break="true"]').forEach(pb => pb.remove());
+
+  const imgs = element.querySelectorAll("img");
+  const promises = Array.from(imgs).map(img => {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.setAttribute("crossOrigin", "anonymous");
+
+      image.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = image.naturalWidth;
+          canvas.height = image.naturalHeight;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(image, 0, 0);
+          img.src = canvas.toDataURL("image/jpeg");
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      };
+
+      image.onerror = () => resolve();
+      image.src = img.src;
+    });
+  });
+
+  await Promise.all(promises);
+
+  html2pdf()
+    .set({
+      margin: 0.3,
+      filename: `Family_Registration_${index + 1}.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    })
+    .from(element)
+    .output('bloburl')
+    .then(url => {
+      window.open(url, '_blank');
+      element.style.display = "none";
+    });
+}
+
+async function downloadAllPDF() {
+  const elements = document.querySelectorAll(".pdf-content");
+  elements.forEach(el => el.style.display = "block");
+
+  const imgs = document.querySelectorAll(".pdf-content img");
+  const promises = Array.from(imgs).map(img => {
+    return new Promise((resolve, reject) => {
+      const image = new Image();
+      image.setAttribute("crossOrigin", "anonymous");
+      image.onload = () => {
+        try {
+          const canvas = document.createElement("canvas");
+          canvas.width = image.naturalWidth;
+          canvas.height = image.naturalHeight;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(image, 0, 0);
+          img.src = canvas.toDataURL("image/jpeg");
+          resolve();
+        } catch (err) {
+          reject(err);
+        }
+      };
+      image.onerror = () => resolve();
+      image.src = img.src;
+    });
+  });
+
+  await Promise.all(promises);
+
+  const container = document.createElement("div");
+  elements.forEach(el => container.appendChild(el.cloneNode(true)));
+
+  html2pdf()
+    .set({
+      margin: 0.3,
+      filename: `All_Family_Registrations.pdf`,
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    })
+    .from(container)
+    .output('bloburl')
+    .then(url => {
+      window.open(url, '_blank');
+      elements.forEach(el => el.style.display = "none");
+    });
+}
+    fetchFamilies();
+  </script>
+</body>
+</html>
