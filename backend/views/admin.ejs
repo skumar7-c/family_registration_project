@@ -7,119 +7,181 @@
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
-      background-color: #f4f4f4;
+      background-color: #f2f2f2;
     }
     h1 {
       text-align: center;
-    }
-    .top-buttons {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
       margin-bottom: 20px;
     }
-    .top-buttons button {
-      padding: 8px 16px;
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 20px;
     }
-    .top-buttons button:hover {
-      background-color: #0056b3;
+    select, input[type="text"], button {
+      padding: 8px;
+      font-size: 16px;
+      margin: 5px;
     }
     .family-card {
-      background: white;
-      border-radius: 8px;
+      background: #fff;
       padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      box-shadow: 0 0 8px rgba(0,0,0,0.1);
     }
-    .family-card img {
-      max-width: 150px;
-      height: auto;
-      border-radius: 6px;
-      margin: 10px 0;
+    .profile-section {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
     }
-    .members p {
-      margin: 3px 0;
+    .profile-section img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #ccc;
     }
-    .buttons {
+    .family-details, .members {
       margin-top: 10px;
     }
-    .buttons button {
-      margin-right: 10px;
-      padding: 6px 12px;
+    .member-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .member-table th, .member-table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    .member-table th {
+      background-color: #e0e0e0;
+    }
+    .top-right {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .export-button {
+      background-color: #4CAF50;
+      color: white;
       border: none;
-      border-radius: 4px;
       cursor: pointer;
     }
-    .approve { background-color: #28a745; color: white; }
-    .reject { background-color: #dc3545; color: white; }
-    .view { background-color: #17a2b8; color: white; }
+    .view-button {
+      background-color: #2196F3;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
-  <h1>Admin - Family Submissions</h1>
+  <h1>Admin Panel - Family Submissions</h1>
 
-  <div class="top-buttons">
-    <button onclick="window.open('/admin/export-families', '_blank')">📄 Open PDF</button>
-    <button onclick="window.location.href='/admin/export-families'">📥 Download PDF</button>
+  <div class="controls">
+    <div>
+      <select id="cityFilter">
+        <option value="">All Cities</option>
+        <% cities.forEach(city => { %>
+          <option value="<%= city %>"><%= city %></option>
+        <% }) %>
+      </select>
+
+      <select id="statusFilter">
+        <option value="">All Status</option>
+        <option value="Approved">Approved</option>
+        <option value="Rejected">Rejected</option>
+        <option value="Pending">Pending</option>
+      </select>
+
+      <input type="text" id="searchBox" placeholder="Search by name">
+    </div>
+
+    <div class="top-right">
+      <button onclick="window.open('/admin/admin-export-pdf', '_blank')" class="export-button">Export PDF</button>
+      <button onclick="location.href='/admin/add'" class="view-button">+ Add Admin</button>
+    </div>
   </div>
 
-  <div id="families"></div>
+  <div id="families">
+    <% families.forEach(family => { %>
+      <div class="family-card" data-city="<%= family.city %>" data-status="<%= family.status %>">
+        <div class="profile-section">
+          <img src="/uploads/<%= family.profileImage %>" alt="Profile Image">
+          <div class="family-details">
+            <p><strong>Family Head:</strong> <%= family.name %></p>
+            <p><strong>Email:</strong> <%= family.email %></p>
+            <p><strong>Phone:</strong> <%= family.phone %></p>
+            <p><strong>City:</strong> <%= family.city %> | <strong>Locality:</strong> <%= family.locality %></p>
+            <p><strong>Status:</strong> <%= family.status %></p>
+          </div>
+        </div>
+
+        <div class="members">
+          <h3>Family Members:</h3>
+          <table class="member-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Relation</th>
+                <th>Occupation</th>
+                <th>Qualification</th>
+                <th>Blood Group</th>
+                <th>Marital Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% family.members.forEach(member => { %>
+                <tr>
+                  <td><%= member.name %></td>
+                  <td><%= member.age %></td>
+                  <td><%= member.relation %></td>
+                  <td><%= member.occupation %></td>
+                  <td><%= member.qualification %></td>
+                  <td><%= member.bloodGroup %></td>
+                  <td><%= member.maritalStatus %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% }) %>
+  </div>
 
   <script>
-    async function fetchFamilies() {
-      const res = await fetch('/admin/families');
-      const data = await res.json();
-      const container = document.getElementById('families');
-      container.innerHTML = '';
+    const cityFilter = document.getElementById('cityFilter');
+    const statusFilter = document.getElementById('statusFilter');
+    const searchBox = document.getElementById('searchBox');
+    const familyCards = document.querySelectorAll('.family-card');
 
-      data.forEach(family => {
-        const div = document.createElement('div');
-        div.className = 'family-card';
-        
-        let membersHTML = '';
-        if (family.members && family.members.length > 0) {
-          membersHTML = '<div class="members"><strong>Members:</strong>';
-          family.members.forEach((m, i) => {
-            membersHTML += `<p>#${i+1}: ${m.name} | Age: ${m.age} | Gender: ${m.gender} | Relation: ${m.relation}</p>`;
-          });
-          membersHTML += '</div>';
-        }
+    function filterCards() {
+      const city = cityFilter.value.toLowerCase();
+      const status = statusFilter.value.toLowerCase();
+      const search = searchBox.value.toLowerCase();
 
-        div.innerHTML = `
-          <p><strong>Family Head:</strong> ${family.familyHead}</p>
-          <p><strong>Email:</strong> ${family.email}</p>
-          <p><strong>Status:</strong> ${family.status || 'Pending'}</p>
-          ${family.image ? `<img src="/uploads/${family.image}" alt="Profile Image">` : ''}
-          ${membersHTML}
-          <div class="buttons">
-            <button class="approve" onclick="updateStatus('${family._id}', 'approved')">✅ Approve</button>
-            <button class="reject" onclick="updateStatus('${family._id}', 'rejected')">❌ Reject</button>
-            <button class="view" onclick="viewPDF('${family._id}')">👁️ View PDF</button>
-          </div>
-        `;
-        container.appendChild(div);
+      familyCards.forEach(card => {
+        const cardCity = card.dataset.city.toLowerCase();
+        const cardStatus = card.dataset.status.toLowerCase();
+        const cardText = card.textContent.toLowerCase();
+
+        const matchCity = city === "" || cardCity === city;
+        const matchStatus = status === "" || cardStatus === status;
+        const matchSearch = cardText.includes(search);
+
+        card.style.display = (matchCity && matchStatus && matchSearch) ? 'block' : 'none';
       });
     }
 
-    async function updateStatus(id, status) {
-      const res = await fetch(`/admin/families/${id}/${status}`, { method: 'POST' });
-      const msg = await res.text();
-      alert(msg);
-      fetchFamilies();
-    }
-
-    function viewPDF(id) {
-      window.open(`/admin/family/${id}/pdf`, '_blank');
-    }
-
-    fetchFamilies();
+    cityFilter.addEventListener('change', filterCards);
+    statusFilter.addEventListener('change', filterCards);
+    searchBox.addEventListener('input', filterCards);
   </script>
-
 </body>
 </html>
