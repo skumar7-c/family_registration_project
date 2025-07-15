@@ -1,200 +1,258 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html>
 <head>
-  <meta charset="UTF-8">
-  <title>Admin Panel - Family Submissions</title>
+  <title>Admin Panel</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
-      background-color: #f2f2f2;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    select, input[type="text"], button {
-      padding: 8px;
-      font-size: 16px;
-      margin: 5px;
-    }
-    .family-card {
-      background: #fff;
-      padding: 20px;
-      margin-bottom: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.1);
-    }
-    .profile-section {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .profile-section img {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid #ccc;
-    }
-    .family-details, .members {
-      margin-top: 10px;
-    }
-    .member-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    .member-table th, .member-table td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-    }
-    .member-table th {
-      background-color: #e0e0e0;
-    }
-    .top-right {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .export-button {
-      background-color: #4CAF50;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    .view-button {
-      background-color: #2196F3;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    .bottom-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
+    }.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.summary-box {
+  display: flex;
+  gap: 20px;
+  background-color: #f0f0f0;
+  border: 2px solid #ccc;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 15px;
+}
+
+.summary-item {
+  flex: 1;
+  background-color: #fff;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+
+.filters {
+  margin-bottom: 20px;
+}
+
+.filters label {
+  margin-right: 10px;
+}
+
+.filters select {
+  margin-right: 20px;
+  padding: 5px 8px;
+  font-size: 14px;
+}
+
+.family-container {
+  border: 2px solid green;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.family-heading {
+  text-align: center;
+  color: brown;
+  font-weight: bolder;
+  font-size: 18px;
+  margin-bottom: 10px;
+  text-decoration: underline;
+}
+
+.details {
+  display: none;
+  margin-top: 10px;
+  padding-left: 10px;
+}
+
+.view-btn {
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  color: blue;
+  text-decoration: underline;
+}
+
+.status-buttons {
+  margin-top: 10px;
+}
+
+.add-admin-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.add-admin-btn:hover {
+  background-color: #218838;
+}
+
   </style>
 </head>
-<body>
+<body>  <div class="header">
+    <h1 style="color: orchid;">Admin Panel - Family Form Submissions</h1>
+    <button class="add-admin-btn" onclick="handleAddAdmin()">+ Add Admin</button>
+  </div>  <div class="summary-box" id="summary-stats">
+    <div class="summary-item"><strong>Total Registrations</strong><br><span id="totalCount">0</span></div>
+    <div class="summary-item"><strong>Approved</strong><br><span id="approvedCount">0</span></div>
+    <div class="summary-item"><strong>Rejected</strong><br><span id="rejectedCount">0</span></div>
+    <div class="summary-item"><strong>Pending</strong><br><span id="pendingCount">0</span></div>
+  </div>  <div class="filters">
+    <label for="statusFilter">Filter by Status:</label>
+    <select id="statusFilter" onchange="applyFilters()">
+      <option value="">All</option>
+      <option value="approved">Approved</option>
+      <option value="rejected">Rejected</option>
+      <option value="pending">Pending</option>
+    </select><label for="cityFilter">Filter by City:</label>
+<select id="cityFilter" onchange="applyFilters()">
+  <option value="">All</option>
+  <option value="Jaipur">Jaipur</option>
+  <option value="Chittorgarh">Chittorgarh</option>
+</select>
 
-  <h1 style="color:green">Admin Panel - Family Submissions</h1>
+  </div>  <div>
+    <button onclick="exportToPDF()" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+      📄 Export to PDF
+    </button>
+  </div>  <div id="families"></div>  <script>
+    function exportToPDF() {
+      window.open('/admin/admin-export-pdf');
+    }
 
-  <!-- Filter Controls -->
-  <div class="controls">
-    <div>
-      <select id="cityFilter">
-        <option value="">All Cities</option>
-        <% cities.forEach(city => { %>
-          <option value="<%= city %>"><%= city %></option>
-        <% }) %>
-      </select>
+    let allData = [];
 
-      <select id="statusFilter">
-        <option value="">All Status</option>
-        <option value="Approved">Approved</option>
-        <option value="Rejected">Rejected</option>
-        <option value="Pending">Pending</option>
-      </select>
+    async function fetchFamilies() {
+      const res = await fetch('/admin/families');
+      const data = await res.json();
+      allData = data;
+      applyFilters();
+    }
 
-      <input type="text" id="searchBox" placeholder="Search by name">
-    </div>
-    <div class="top-right">
-      <button onclick="location.href='/admin/add'" class="view-button">+ Add Admin</button>
-    </div>
-  </div>
+    function applyFilters() {
+      const status = document.getElementById('statusFilter').value;
+      const city = document.getElementById('cityFilter').value;
 
-  <!-- Export PDF Button -->
-  <div class="bottom-controls">
-    <button onclick="window.open('/admin/admin-export-pdf', '_blank')" class="export-button">📄 Export to PDF</button>
-  </div>
+      const filtered = allData.filter(family => {
+        const matchStatus = status ? (family.status || 'pending') === status : true;
+        const matchCity = city ? family.city === city : true;
+        return matchStatus && matchCity;
+      });
 
-  <!-- Family Cards -->
-  <div id="families">
-    <% families.forEach(family => { %>
-      <div class="family-card" data-city="<%= family.city %>" data-status="<%= family.status %>">
-        <div class="profile-section">
-          <img src="/uploads/<%= family.profileImage %>" alt="Profile Image">
-          <div class="family-details">
-            <p><strong>Family Head:</strong> <%= family.name %></p>
-            <p><strong>Email:</strong> <%= family.email %></p>
-            <p><strong>Phone:</strong> <%= family.phone %></p>
-            <p><strong>City:</strong> <%= family.city %> | <strong>Locality:</strong> <%= family.locality %></p>
-            <p><strong>Status:</strong> <%= family.status %></p>
-          </div>
-        </div>
+      renderFamilies(filtered);
+      updateSummary(allData);
+    }
 
-        <div class="members">
-          <h3>Family Members:</h3>
-          <table class="member-table">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Relation</th>
-                <th>Occupation</th>
-                <th>Qualification</th>
-                <th>Blood Group</th>
-                <th>Marital Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% family.members.forEach(member => { %>
+    function renderFamilies(data) {
+      const container = document.getElementById('families');
+      container.innerHTML = '';
+
+      data.forEach((family, index) => {
+        const div = document.createElement('div');
+        div.classList.add('family-container');
+
+        div.innerHTML = `
+          <div class="family-heading">Family Registration - ${index + 1}</div>
+          <p><strong>Name:</strong> ${family.familyHead}</p>
+          <p><strong>Email:</strong> ${family.email}</p>
+          <p><strong>DOB:</strong> ${family.dob}</p>
+          <p><strong>City:</strong> ${family.city || 'N/A'}</p>
+          <p><strong>Status:</strong> ${family.status || 'Pending'}</p>
+          <p><strong>Photo:</strong><br><img src="${family.imageURL || ''}" alt="Profile Image" style="width:100px;height:100px;border:1px solid #000;" /></p>
+          <button class="view-btn" onclick="toggleDetails(${index})">👁 View</button>
+
+          <div class="details" id="details-${index}">
+            <p><strong>Phone number:</strong> ${family.phone}</p>
+            <p><strong>Gender:</strong> ${family.gender}</p>
+            <p><strong>Occupation:</strong> ${family.occupation}</p>
+            <p><strong>Gotra:</strong> ${family.gotra}</p>
+            <p><strong>Locality:</strong> ${family.locality}</p>
+            <p><strong>Native Place:</strong> ${family.nativePlace}</p>
+            <p><strong>Blood Group:</strong> ${family.bloodGroup}</p>
+            <p><strong>Address:</strong> ${family.address}</p>
+            <p><strong>Created At:</strong> ${new Date(family.createdAt).toLocaleString()}</p>
+            <p><strong>Updated At:</strong> ${new Date(family.updatedAt).toLocaleString()}</p>
+
+            <p style="color:brown;"><strong>Family Members:</strong></p>
+            <table border="1" cellpadding="5" cellspacing="0" width="100%">
+              <thead>
                 <tr>
-                  <td><%= member.memberName %></td>
-                  <td><%= member.memberAge %></td>
-                  <td><%= member.memberRelation %></td>
-                  <td><%= member.memberOccupation %></td>
-                  <td><%= member.memberQualification %></td>
-                  <td><%= member.memberBloodGroup %></td>
-                  <td><%= member.memberMaritalStatus %></td>
+                  <th>Name</th>
+                  <th>Relation</th>
+                  <th>Age</th>
+                  <th>Marital Status</th>
+                  <th>Blood Group</th>
+                  <th>Qualification</th>
+                  <th>Occupation</th>
                 </tr>
-              <% }) %>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    <% }) %>
-  </div>
+              </thead>
+              <tbody>
+                ${(family.members || []).map(member => `
+                  <tr>
+                    <td>${member.name}</td>
+                    <td>${member.relation}</td>
+                    <td>${member.age}</td>
+                    <td>${member.maritalStatus}</td>
+                    <td>${member.bloodGroup}</td>
+                    <td>${member.qualification}</td>
+                    <td>${member.occupation}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
 
-  <!-- Filtering Script -->
-  <script>
-    const cityFilter = document.getElementById('cityFilter');
-    const statusFilter = document.getElementById('statusFilter');
-    const searchBox = document.getElementById('searchBox');
-    const familyCards = document.querySelectorAll('.family-card');
+          <div class="status-buttons">
+            <button onclick="updateStatus('${family._id}', 'approved')">✅ Approved</button>
+            <button onclick="updateStatus('${family._id}', 'rejected')">❌ Rejected</button>
+          </div>
+        `;
 
-    function filterCards() {
-      const city = cityFilter.value.toLowerCase();
-      const status = statusFilter.value.toLowerCase();
-      const search = searchBox.value.toLowerCase();
-
-      familyCards.forEach(card => {
-        const cardCity = card.dataset.city.toLowerCase();
-        const cardStatus = card.dataset.status.toLowerCase();
-        const cardText = card.textContent.toLowerCase();
-
-        const matchCity = city === "" || cardCity === city;
-        const matchStatus = status === "" || cardStatus === status;
-        const matchSearch = cardText.includes(search);
-
-        card.style.display = (matchCity && matchStatus && matchSearch) ? 'block' : 'none';
+        container.appendChild(div);
       });
     }
 
-    cityFilter.addEventListener('change', filterCards);
-    statusFilter.addEventListener('change', filterCards);
-    searchBox.addEventListener('input', filterCards);
-  </script>
-</body>
+    function toggleDetails(index) {
+      const detailsDiv = document.getElementById(details-${index});
+      detailsDiv.style.display = detailsDiv.style.display === 'block' ? 'none' : 'block';
+    }
+
+    async function updateStatus(id, status) {
+      const res = await fetch(/admin/families/${id}/${status}, {
+        method: 'POST'
+      });
+      const result = await res.text();
+      alert(result);
+      fetchFamilies();
+    }
+
+    function updateSummary(data) {
+      const total = data.length;
+      let approved = 0, rejected = 0, pending = 0;
+
+      data.forEach(f => {
+        if (f.status === 'approved') approved++;
+        else if (f.status === 'rejected') rejected++;
+        else pending++;
+      });
+
+      document.getElementById('totalCount').innerText = total;
+      document.getElementById('approvedCount').innerText = approved;
+      document.getElementById('rejectedCount').innerText = rejected;
+      document.getElementById('pendingCount').innerText = pending;
+    }
+
+    function handleAddAdmin() {
+      alert('🔒 Add Admin functionality coming soon.');
+    }
+
+    fetchFamilies();
+  </script></body>
 </html>
