@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Admin Panel - Family Submissions</title>
   <style>
     body {
@@ -9,55 +9,45 @@
       margin: 20px;
       background-color: #f4f4f4;
     }
-
     h1 {
       text-align: center;
-      color: #333;
     }
-
     .top-buttons {
       display: flex;
       justify-content: flex-end;
-      margin-bottom: 20px;
       gap: 10px;
+      margin-bottom: 20px;
     }
-
     .top-buttons button {
       padding: 8px 16px;
       background-color: #007bff;
       color: white;
       border: none;
-      border-radius: 4px;
+      border-radius: 5px;
       cursor: pointer;
     }
-
     .top-buttons button:hover {
       background-color: #0056b3;
     }
-
     .family-card {
-      background-color: #fff;
+      background: white;
+      border-radius: 8px;
       padding: 20px;
       margin-bottom: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-
     .family-card img {
-      max-width: 120px;
+      max-width: 150px;
       height: auto;
       border-radius: 6px;
-      margin-bottom: 10px;
+      margin: 10px 0;
     }
-
-    .family-card p {
-      margin: 5px 0;
+    .members p {
+      margin: 3px 0;
     }
-
     .buttons {
       margin-top: 10px;
     }
-
     .buttons button {
       margin-right: 10px;
       padding: 6px 12px;
@@ -65,42 +55,9 @@
       border-radius: 4px;
       cursor: pointer;
     }
-
-    .approve {
-      background-color: #28a745;
-      color: white;
-    }
-
-    .reject {
-      background-color: #dc3545;
-      color: white;
-    }
-
-    .view {
-      background-color: #17a2b8;
-      color: white;
-    }
-
-    .approve:hover {
-      background-color: #218838;
-    }
-
-    .reject:hover {
-      background-color: #c82333;
-    }
-
-    .view:hover {
-      background-color: #138496;
-    }
-
-    .members {
-      margin-top: 10px;
-      padding-left: 15px;
-    }
-
-    .members p {
-      margin: 3px 0;
-    }
+    .approve { background-color: #28a745; color: white; }
+    .reject { background-color: #dc3545; color: white; }
+    .view { background-color: #17a2b8; color: white; }
   </style>
 </head>
 <body>
@@ -108,77 +65,61 @@
   <h1>Admin - Family Submissions</h1>
 
   <div class="top-buttons">
-    <button onclick="window.open('/admin/export-families', '_blank')">📄 Open All in New Tab</button>
-    <button onclick="window.location.href='/admin/export-families'">📥 Download All as PDF</button>
+    <button onclick="window.open('/admin/export-families', '_blank')">📄 Open PDF</button>
+    <button onclick="window.location.href='/admin/export-families'">📥 Download PDF</button>
   </div>
 
   <div id="families"></div>
 
   <script>
     async function fetchFamilies() {
-      try {
-        const res = await fetch('/admin/families');
-        const data = await res.json();
-        const container = document.getElementById('families');
-        container.innerHTML = '';
+      const res = await fetch('/admin/families');
+      const data = await res.json();
+      const container = document.getElementById('families');
+      container.innerHTML = '';
 
-        if (!Array.isArray(data) || data.length === 0) {
-          container.innerHTML = '<p>No submissions found.</p>';
-          return;
+      data.forEach(family => {
+        const div = document.createElement('div');
+        div.className = 'family-card';
+        
+        let membersHTML = '';
+        if (family.members && family.members.length > 0) {
+          membersHTML = '<div class="members"><strong>Members:</strong>';
+          family.members.forEach((m, i) => {
+            membersHTML += `<p>#${i+1}: ${m.name} | Age: ${m.age} | Gender: ${m.gender} | Relation: ${m.relation}</p>`;
+          });
+          membersHTML += '</div>';
         }
 
-        data.forEach(family => {
-          const div = document.createElement('div');
-          div.className = 'family-card';
-
-          let membersHTML = '';
-          if (Array.isArray(family.members) && family.members.length > 0) {
-            membersHTML = '<div class="members"><strong>Family Members:</strong>';
-            family.members.forEach((member, index) => {
-              membersHTML += `
-                <p>#${index + 1} - Name: ${member.name}, Age: ${member.age}, Gender: ${member.gender}, Relation: ${member.relation}</p>
-              `;
-            });
-            membersHTML += '</div>';
-          }
-
-          div.innerHTML = `
-            <p><strong>Name:</strong> ${family.familyHead}</p>
-            <p><strong>Email:</strong> ${family.email}</p>
-            <p><strong>Status:</strong> ${family.status || 'Pending'}</p>
-            ${family.image ? `<img src="/uploads/${family.image}" alt="Profile Image" />` : ''}
-            ${membersHTML}
-            <div class="buttons">
-              <button class="approve" onclick="updateStatus('${family._id}', 'approved')">✅ Approve</button>
-              <button class="reject" onclick="updateStatus('${family._id}', 'rejected')">❌ Reject</button>
-              <button class="view" onclick="viewFamily('${family._id}')">👁️ View</button>
-            </div>
-          `;
-          container.appendChild(div);
-        });
-      } catch (error) {
-        console.error('Error loading families:', error);
-        document.getElementById('families').innerHTML = '<p>Error loading data.</p>';
-      }
+        div.innerHTML = `
+          <p><strong>Family Head:</strong> ${family.familyHead}</p>
+          <p><strong>Email:</strong> ${family.email}</p>
+          <p><strong>Status:</strong> ${family.status || 'Pending'}</p>
+          ${family.image ? `<img src="/uploads/${family.image}" alt="Profile Image">` : ''}
+          ${membersHTML}
+          <div class="buttons">
+            <button class="approve" onclick="updateStatus('${family._id}', 'approved')">✅ Approve</button>
+            <button class="reject" onclick="updateStatus('${family._id}', 'rejected')">❌ Reject</button>
+            <button class="view" onclick="viewPDF('${family._id}')">👁️ View PDF</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
     }
 
     async function updateStatus(id, status) {
-      try {
-        const res = await fetch(`/admin/families/${id}/${status}`, { method: 'POST' });
-        const result = await res.text();
-        alert(result);
-        fetchFamilies();
-      } catch (err) {
-        console.error('Error updating status:', err);
-        alert('Failed to update.');
-      }
+      const res = await fetch(`/admin/families/${id}/${status}`, { method: 'POST' });
+      const msg = await res.text();
+      alert(msg);
+      fetchFamilies();
     }
 
-    function viewFamily(id) {
+    function viewPDF(id) {
       window.open(`/admin/family/${id}/pdf`, '_blank');
     }
 
     fetchFamilies();
   </script>
+
 </body>
 </html>
