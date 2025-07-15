@@ -17,7 +17,7 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
     select, input[type="text"], button {
       padding: 8px;
@@ -77,12 +77,20 @@
       border: none;
       cursor: pointer;
     }
+    .bottom-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
 
   <h1>Admin Panel - Family Submissions</h1>
 
+  <!-- Filter Controls -->
   <div class="controls">
     <div>
       <select id="cityFilter">
@@ -101,13 +109,17 @@
 
       <input type="text" id="searchBox" placeholder="Search by name">
     </div>
-
     <div class="top-right">
-      <button onclick="window.open('/admin/admin-export-pdf', '_blank')" class="export-button">Export PDF</button>
       <button onclick="location.href='/admin/add'" class="view-button">+ Add Admin</button>
     </div>
   </div>
 
+  <!-- Export PDF Button -->
+  <div class="bottom-controls">
+    <button onclick="window.open('/admin/admin-export-pdf', '_blank')" class="export-button">📄 Export to PDF</button>
+  </div>
+
+  <!-- Family Cards -->
   <div id="families">
     <% families.forEach(family => { %>
       <div class="family-card" data-city="<%= family.city %>" data-status="<%= family.status %>">
@@ -155,6 +167,7 @@
     <% }) %>
   </div>
 
+  <!-- Filtering Script -->
   <script>
     const cityFilter = document.getElementById('cityFilter');
     const statusFilter = document.getElementById('statusFilter');
