@@ -104,29 +104,38 @@
     <div class="summary-item"><strong>Approved</strong><br><span id="approvedCount">0</span></div>
     <div class="summary-item"><strong>Rejected</strong><br><span id="rejectedCount">0</span></div>
     <div class="summary-item"><strong>Pending</strong><br><span id="pendingCount">0</span></div>
-  </div>  <div class="filters">
+  </div> 
+
+
+<div class="filters" style="display: flex; justify-content: space-between; align-items: center;">
+  <div>
     <label for="statusFilter">Filter by Status:</label>
     <select id="statusFilter" onchange="applyFilters()">
       <option value="">All</option>
       <option value="approved">Approved</option>
       <option value="rejected">Rejected</option>
       <option value="pending">Pending</option>
-    </select><label for="cityFilter">Filter by City:</label>
-<select id="cityFilter" onchange="applyFilters()">
-  <option value="">All</option>
-  <option value="Jaipur">Jaipur</option>
-  <option value="Chittorgarh">Chittorgarh</option>
-</select>
+    </select>
 
-  </div>  <div>
-    <button onclick="exportToPDF()" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-      📄 Export to PDF
-    </button>
-  </div>  <div id="families"></div>  <script>
+    <label for="cityFilter">Filter by City:</label>
+    <select id="cityFilter" onchange="applyFilters()">
+      <option value="">All</option>
+      <option value="Jaipur">Jaipur</option>
+      <option value="Chittorgarh">Chittorgarh</option>
+    </select>
+  </div>
+
+  <button onclick="exportToPDF()" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+    📄 Export to PDF
+  </button>
+</div>
+<div id="families"></div> 
+
+
+<script>
     function exportToPDF() {
       window.open('/admin/admin-export-pdf');
     }
-
     let allData = [];
 
     async function fetchFamilies() {
@@ -252,7 +261,6 @@
     function handleAddAdmin() {
       alert('🔒 Add Admin functionality coming soon.');
     }
-
     fetchFamilies();
   </script></body>
 </html>
