@@ -1,141 +1,155 @@
-<!DOCTYPE html><html>
+<!DOCTYPE html>
+<html>
 <head>
   <title>Admin Panel</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
-    }.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
+    }
 
-.summary-box {
-  display: flex;
-  gap: 20px;
-  background-color: #f0f0f0;
-  border: 2px solid #ccc;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 15px;
-}
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
 
-.summary-item {
-  flex: 1;
-  background-color: #fff;
-  border: 1px solid #bbb;
-  border-radius: 8px;
-  padding: 10px;
-  text-align: center;
-}
+    .summary-box {
+      display: flex;
+      gap: 20px;
+      background-color: #f0f0f0;
+      border: 2px solid #ccc;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
 
-.filters {
-  margin-bottom: 20px;
-}
+    .summary-item {
+      flex: 1;
+      background-color: #fff;
+      border: 1px solid #bbb;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+    }
 
-.filters label {
-  margin-right: 10px;
-}
+    .filters {
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-.filters select {
-  margin-right: 20px;
-  padding: 5px 8px;
-  font-size: 14px;
-}
+    .left-filters {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
 
-.family-container {
-  border: 2px solid green;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 8px;
-}
+    .filters label {
+      margin-right: 5px;
+    }
 
-.family-heading {
-  text-align: center;
-  color: brown;
-  font-weight: bolder;
-  font-size: 18px;
-  margin-bottom: 10px;
-  text-decoration: underline;
-}
+    .filters select {
+      padding: 5px 8px;
+      font-size: 14px;
+    }
 
-.details {
-  display: none;
-  margin-top: 10px;
-  padding-left: 10px;
-}
+    .family-container {
+      border: 2px solid green;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+    }
 
-.view-btn {
-  cursor: pointer;
-  background-color: transparent;
-  border: none;
-  font-size: 16px;
-  color: blue;
-  text-decoration: underline;
-}
+    .family-heading {
+      text-align: center;
+      color: brown;
+      font-weight: bolder;
+      font-size: 18px;
+      margin-bottom: 10px;
+      text-decoration: underline;
+    }
 
-.status-buttons {
-  margin-top: 10px;
-}
+    .details {
+      display: none;
+      margin-top: 10px;
+      padding-left: 10px;
+    }
 
-.add-admin-btn {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 12px 18px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-}
+    .view-btn {
+      cursor: pointer;
+      background-color: transparent;
+      border: none;
+      font-size: 16px;
+      color: blue;
+      text-decoration: underline;
+    }
 
-.add-admin-btn:hover {
-  background-color: #218838;
-}
+    .status-buttons {
+      margin-top: 10px;
+    }
 
+    .add-admin-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .add-admin-btn:hover {
+      background-color: #218838;
+    }
   </style>
 </head>
-<body>  <div class="header">
+<body>
+
+  <div class="header">
     <h1 style="color: orchid;">Admin Panel - Family Form Submissions</h1>
     <button class="add-admin-btn" onclick="handleAddAdmin()">+ Add Admin</button>
-  </div>  <div class="summary-box" id="summary-stats">
+  </div>
+
+  <div class="summary-box" id="summary-stats">
     <div class="summary-item"><strong>Total Registrations</strong><br><span id="totalCount">0</span></div>
     <div class="summary-item"><strong>Approved</strong><br><span id="approvedCount">0</span></div>
     <div class="summary-item"><strong>Rejected</strong><br><span id="rejectedCount">0</span></div>
     <div class="summary-item"><strong>Pending</strong><br><span id="pendingCount">0</span></div>
-  </div> 
-
-
-<div class="filters" style="display: flex; justify-content: space-between; align-items: center;">
-  <div>
-    <label for="statusFilter">Filter by Status:</label>
-    <select id="statusFilter" onchange="applyFilters()">
-      <option value="">All</option>
-      <option value="approved">Approved</option>
-      <option value="rejected">Rejected</option>
-      <option value="pending">Pending</option>
-    </select>
-
-    <label for="cityFilter">Filter by City:</label>
-    <select id="cityFilter" onchange="applyFilters()">
-      <option value="">All</option>
-      <option value="Jaipur">Jaipur</option>
-      <option value="Chittorgarh">Chittorgarh</option>
-    </select>
   </div>
 
-  <button onclick="exportToPDF()" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
-    📄 Export to PDF
-  </button>
-</div>
-<div id="families"></div> 
+  <div class="filters">
+    <div class="left-filters">
+      <label for="statusFilter">Filter by Status:</label>
+      <select id="statusFilter" onchange="applyFilters()">
+        <option value="">All</option>
+        <option value="approved">Approved</option>
+        <option value="rejected">Rejected</option>
+        <option value="pending">Pending</option>
+      </select>
 
+      <label for="cityFilter">Filter by City:</label>
+      <select id="cityFilter" onchange="applyFilters()">
+        <option value="">All</option>
+        <option value="Jaipur">Jaipur</option>
+        <option value="Chittorgarh">Chittorgarh</option>
+      </select>
+    </div>
 
-<script>
+    <button onclick="exportToPDF()" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+      📄 Export to PDF
+    </button>
+  </div>
+
+  <div id="families"></div>
+
+  <script>
     function exportToPDF() {
-      window.open('/admin/admin-export-pdf');
+      window.open('/admin/admin-export-pdf', '_blank');
     }
+
     let allData = [];
 
     async function fetchFamilies() {
@@ -229,12 +243,12 @@
     }
 
     function toggleDetails(index) {
-      const detailsDiv = document.getElementById(details-${index});
+      const detailsDiv = document.getElementById(`details-${index}`);
       detailsDiv.style.display = detailsDiv.style.display === 'block' ? 'none' : 'block';
     }
 
     async function updateStatus(id, status) {
-      const res = await fetch(/admin/families/${id}/${status}, {
+      const res = await fetch(`/admin/families/${id}/${status}`, {
         method: 'POST'
       });
       const result = await res.text();
@@ -261,6 +275,8 @@
     function handleAddAdmin() {
       alert('🔒 Add Admin functionality coming soon.');
     }
+
     fetchFamilies();
-  </script></body>
+  </script>
+</body>
 </html>
